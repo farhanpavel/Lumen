@@ -139,23 +139,23 @@ export const getResume = async (req, res) => {
 
 const mapEmploymentType = (type) => {
   const mapping = {
-    "Full-time": "FULL_TIME",
-    "Part-time": "PART_TIME",
-    Contract: "CONTRACT",
-    Internship: "INTERNSHIP",
+    'Full-time': 'FULL_TIME',
+    'Part-time': 'PART_TIME',
+    'Contract': 'CONTRACT',
+    'Internship': 'INTERNSHIP'
   };
-  return mapping[type] || "FULL_TIME";
+  return mapping[type] || 'FULL_TIME';
 };
 
 const mapExperienceLevel = (level) => {
   const mapping = {
-    "Mid-Senior level": "MID_SENIOR_LEVEL",
-    "Entry level": "ENTRY_LEVEL",
-    Associate: "ASSOCIATE",
-    Director: "DIRECTOR",
-    Executive: "EXECUTIVE",
+    'Mid-Senior level': 'MID_SENIOR_LEVEL',
+    'Entry level': 'ENTRY_LEVEL',
+    'Associate': 'ASSOCIATE',
+    'Director': 'DIRECTOR',
+    'Executive': 'EXECUTIVE'
   };
-  return mapping[level] || "MID_SENIOR_LEVEL";
+  return mapping[level] || 'MID_SENIOR_LEVEL';
 };
 
 export const validateResume = async (req, res) => {
@@ -166,13 +166,13 @@ export const validateResume = async (req, res) => {
     // Get user's resume
     const resume = await prisma.resume.findUnique({
       where: { userId },
-      include: { user: true },
+      include: { user: true }
     });
 
     const user = await prisma.user.findUnique({
       where: {
-        id: userId,
-      },
+        id: userId
+      }
     });
     console.log(user);
 
@@ -181,23 +181,22 @@ export const validateResume = async (req, res) => {
     let jobData;
     const jobFoundLocally = await prisma.job.findUnique({
       where: {
-        id: jobId,
-      },
+        id: jobId
+      }
     });
     let isLinkedInJob = false;
-    if (!jobFoundLocally) isLinkedInJob = true;
+    if(!jobFoundLocally) isLinkedInJob = true;
     if (isLinkedInJob) {
       // Fetch LinkedIn job data
       const response = await fetch(
-        `https://linkedin-data-api.p.rapidapi.com/get-job-details?id=${jobId}`,
-        {
-          method: "GET",
-          headers: {
-            "x-rapidapi-key":
-              "bb834ebd60mshbda2ab24352bae8p137102jsne7dad0e3970e",
-            "x-rapidapi-host": "linkedin-data-api.p.rapidapi.com",
-          },
-        }
+          `https://linkedin-data-api.p.rapidapi.com/get-job-details?id=${jobId}`,
+          {
+            method: 'GET',
+            headers: {
+              'x-rapidapi-key': 'bb834ebd60mshbda2ab24352bae8p137102jsne7dad0e3970e',
+              'x-rapidapi-host': 'linkedin-data-api.p.rapidapi.com'
+            }
+          }
       );
       const linkedInJob = await response.json();
 
@@ -208,26 +207,24 @@ export const validateResume = async (req, res) => {
         location: linkedInJob.data.location,
         remote: linkedInJob.data.workRemoteAllowed,
         employmentType: mapEmploymentType(linkedInJob.data.type),
-        experienceLevel: mapExperienceLevel(
-          linkedInJob.data.formattedExperienceLevel
-        ),
+        experienceLevel: mapExperienceLevel(linkedInJob.data.formattedExperienceLevel),
         keywords: [
           ...(linkedInJob.data.formattedJobFunctions || []),
-          ...(linkedInJob.data.company.specialities || []),
-        ],
+          ...(linkedInJob.data.company.specialities || [])
+        ]
       };
     } else {
       // Fetch our platform job data
       const platformJob = await prisma.job.findUnique({
         where: { id: jobId },
-        include: { keywords: true },
+        include: { keywords: true }
       });
 
       jobData = {
         ...platformJob,
-        keywords: platformJob.keywords.map((k) => k.name),
+        keywords: platformJob.keywords.map(k => k.name),
         employmentType: platformJob.employmentType,
-        experienceLevel: platformJob.experienceLevel,
+        experienceLevel: platformJob.experienceLevel
       };
     }
 
@@ -240,8 +237,8 @@ export const validateResume = async (req, res) => {
     - lackings: missing keywords as string array
     
     Resume:
-    - Skills: ${resume.skills.join(", ")}
-    - Frameworks: ${resume.frameworks.join(", ")}
+    - Skills: ${resume.skills.join(', ')}
+    - Frameworks: ${resume.frameworks.join(', ')}
     - Experience: ${resume.yearsExperience} years
     - Education: ${resume.education}
     - Summary: ${resume.summary}
@@ -251,7 +248,7 @@ export const validateResume = async (req, res) => {
     - Description: ${jobData.description.substring(0, 2000)}
     - Required Experience: ${jobData.experienceLevel}
     - Employment Type: ${jobData.employmentType}
-    - Keywords: ${jobData.keywords.join(", ")}
+    - Keywords: ${jobData.keywords.join(', ')}
     `;
 
     console.log(prompt);
@@ -259,20 +256,161 @@ export const validateResume = async (req, res) => {
     // Get Gemini response
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    const analysis = JSON.parse(
-      response
-        .text()
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-    );
+    const analysis = JSON.parse(response.text().replace(/```json/g, '').replace(/```/g, ''));
 
     res.json(analysis);
+
   } catch (error) {
-    console.error("Validation error:", error);
-    res
-      .status(500)
-      .json({ error: "Validation failed", details: error.message });
+    console.error('Validation error:', error);
+    res.status(500).json({ error: "Validation failed", details: error.message });
   }
 };
 
-export const createQuestions = (req, res) => {};
+export const createQuestions = async (req, res) => {
+  try {
+    const { jobId } = req.body;
+    // Check if job exists locally
+    const localJob = await prisma.job.findUnique({
+      where: { id: jobId },
+      include: { keywords: true }
+    });
+
+    let jobData;
+
+    if (localJob) {
+      // Local job processing
+      jobData = {
+        title: localJob.title,
+        description: localJob.description,
+        company: localJob.company,
+        skills: localJob.keywords.map(k => k.name),
+        experienceLevel: localJob.experienceLevel,
+        employmentType: localJob.employmentType
+      };
+    } else {
+      // LinkedIn job processing
+      const response = await fetch(
+          `https://linkedin-data-api.p.rapidapi.com/get-job-details?id=${jobId}`,
+          {
+            method: 'GET',
+            headers: {
+              'x-rapidapi-key': 'bb834ebd60mshbda2ab24352bae8p137102jsne7dad0e3970e',
+              'x-rapidapi-host': 'linkedin-data-api.p.rapidapi.com'
+            }
+          }
+      );
+      const linkedInJob = await response.json();
+
+      jobData = {
+        title: linkedInJob.data.title,
+        description: linkedInJob.data.description,
+        company: linkedInJob.data.company.name,
+        skills: [
+          ...(linkedInJob.data.formattedJobFunctions || []),
+          ...(linkedInJob.data.company.specialities || [])
+        ],
+        experienceLevel: mapExperienceLevel(linkedInJob.data.formattedExperienceLevel),
+        employmentType: mapEmploymentType(linkedInJob.data.type)
+      };
+    }
+
+    // Generate questions prompt
+    const prompt = `
+    Generate 15 comprehensive interview questions for a ${jobData.experienceLevel} level 
+    ${jobData.employmentType.toLowerCase()} position as a ${jobData.title} at ${jobData.company}.
+    
+    Job Description:
+    ${jobData.description.substring(0, 3000)}
+    
+    Required Skills:
+    ${jobData.skills.join(', ')}
+    
+    Create a mix of:
+    - Technical/professional questions
+    - Behavioral questions
+    - Situational questions
+    - Company-specific questions
+    
+    Return only a JSON array of question strings like:
+    ["Question 1", "Question 2", ...]
+    `;
+
+    // Get Gemini response
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let questions = response.text();
+
+    // Clean response
+    questions = questions.replace(/```json/g, '').replace(/```/g, '');
+    const questionsArray = JSON.parse(questions);
+
+    if(!Array.isArray(questionsArray)) {
+      throw new Error('Invalid question format from AI');
+    }
+
+    res.json({
+      success: true,
+      count: questionsArray.length,
+      questions: questionsArray.slice(0, 15) // Ensure exactly 15 questions
+    });
+
+  } catch (error) {
+    console.error('Question generation error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to generate questions'
+    });
+  }
+};
+
+export const reviewAnswers = async (req, res) => {
+  const answers = req.body;
+  try {
+    if (!Array.isArray(answers) || answers.length === 0) {
+      return res.status(400).json({ error: "Invalid input: expected an array of answers." });
+    }
+
+    const prompt = `
+You are an expert technical recruiter. Analyze the following JSON containing interview questions and a candidate's answers.
+return a JSON object with:
+- score (0-100)(total)
+- comment (brief feedback)
+- lackings (an array of topics combinely he missed)
+
+Input:
+${JSON.stringify(answers, null, 2)}
+
+Return format:
+  {
+    "score": number,
+    "comment": string,
+    "lackings": string[]
+  }
+Only return valid JSON.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const analysisText = response.text();
+
+    let reviewed;
+    try {
+      reviewed = JSON.parse(
+          analysisText.replace(/```json/g, '').replace(/```/g, '')
+      );
+    } catch (err) {
+      console.error("Failed to parse AI response:", analysisText);
+      throw new Error("AI response could not be parsed as valid JSON");
+    }
+
+    res.json({
+      success: true,
+      analysis: reviewed
+    });
+  } catch (error) {
+    console.error("Review error:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message || "Failed to review answers"
+    });
+  }
+};
