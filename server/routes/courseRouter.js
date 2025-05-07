@@ -3,3 +3,4 @@ import {getCoursesCoursera} from "../controllers/courseController.js";
 
 const courseRouter = express.Router()
 courseRouter.get("/coursera",getCoursesCoursera)
+export default courseRouter
