@@ -11,15 +11,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      String   @default("USER") // e.g., "USER", "HR", "ADMIN"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  resume    Resume?
-  jobs      Job[]    @relation("PostedJobs")
+  id       String  @id @default(uuid())
+  email    String  @unique
+  password String
+  name     String
+  role     String  @default("USER") // e.g., "USER", "HR", "ADMIN"
+  jobs     Job[]   @relation("PostedJobs")
+  resume   Resume?
 }
 
 model Resume {
