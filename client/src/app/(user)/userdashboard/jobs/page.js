@@ -200,17 +200,7 @@ export default function JobsPage() {
                 setExpandedId(expandedId === job.id ? null : job.id)
               }
             >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-800">
-                    {job.title || "Untitled Position"}
-                  </h2>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {isLinkedIn
-                      ? job.company?.name || "Unknown Company"
-                      : job.company || "Unknown Company"}
-                  </p>
-                </div>
+              <div className="flex justify-end items-start mb-4">
                 <Badge
                   variant="outline"
                   className="bg-[#7657ff]/10 text-[#7657ff] border-[#7657ff]/20 hover:bg-[#7657ff]/20 whitespace-nowrap"
@@ -218,7 +208,16 @@ export default function JobsPage() {
                   {isLinkedIn ? job.location : displayEmploymentType}
                 </Badge>
               </div>
-
+              <div>
+                <h2 className="text-xs font-semibold text-gray-800">
+                  {job.title || "Untitled Position"}
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  {isLinkedIn
+                    ? job.company?.name || "Unknown Company"
+                    : job.company || "Unknown Company"}
+                </p>
+              </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
                 {!isLinkedIn && (
                   <>
