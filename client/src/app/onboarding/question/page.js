@@ -160,7 +160,7 @@ export default function ResumeQuestionsPage() {
 
       const data = await response.json();
       alert("Resume details saved successfully!");
-      router.push("/userdashboard/overview");
+      router.push("/userdashboard/rating");
     } catch (error) {
       console.error("Error saving resume details:", error);
       alert("Failed to save resume details");
