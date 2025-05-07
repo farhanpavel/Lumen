@@ -1,7 +1,8 @@
-"use"
+"use client"
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import Loader from '@/components/Loader'; // Assume you have a Loader component
+import Loader from "@/components/Loader/loader"
+import {url} from "@/components/Url/page";
 
 const JobPostForm = () => {
     const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ const JobPostForm = () => {
         remote: false,
         salaryMin: '',
         salaryMax: '',
-        salaryCurrency: 'USD',
+        salaryCurrency: 'BDT',
         employmentType: '',
         experienceLevel: '',
         keywords: '',
@@ -56,11 +57,11 @@ const JobPostForm = () => {
         }
 
         try {
-            const response = await fetch('/api/job/create', {
+            const response = await fetch(`${url}/api/job/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${Cookies.get('AccessToken')}`
+                    'Authorization': `${Cookies.get('AccessToken')}`
                 },
                 body: JSON.stringify({
                     ...formData,
