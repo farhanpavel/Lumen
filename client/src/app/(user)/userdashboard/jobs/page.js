@@ -209,7 +209,7 @@ export default function JobsPage() {
                 </Badge>
               </div>
               <div>
-                <h2 className="text-xs font-semibold text-gray-800">
+                <h2 className="text-xl font-semibold text-gray-800">
                   {job.title || "Untitled Position"}
                 </h2>
                 <p className="text-sm text-gray-600 mt-1">
