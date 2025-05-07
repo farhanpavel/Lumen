@@ -2,7 +2,7 @@ import express from "express";
 import {
   postResume,
   updateResumeDetails,
-  getResume,
+  getResume, validateResume,
 } from "../controllers/resumeController.js";
 import { jwtAuthentication } from "../middlewares/authMiddleware.js";
 import multer from "multer";
@@ -14,6 +14,7 @@ const resumeRouter = express.Router();
 
 resumeRouter.post("/", jwtAuthentication, upload.single("file"), postResume);
 resumeRouter.put("/details", jwtAuthentication, updateResumeDetails);
+resumeRouter.post("/validate", jwtAuthentication, validateResume);
 resumeRouter.get("/", jwtAuthentication, getResume);
 
 export default resumeRouter;

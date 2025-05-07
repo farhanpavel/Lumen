@@ -18,6 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { url } from "@/components/Url/page";
+import { useRouter } from 'next/navigation'; // or 'next/navigation'
+
+// Inside component
 
 // Helper component for "No Jobs Found" message
 const NoJobsFoundDisplay = ({ onClearFilters }) => (
@@ -50,6 +53,7 @@ export default function JobsPage() {
   const [expandedId, setExpandedId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -98,6 +102,7 @@ export default function JobsPage() {
 
   const handleTakeJob = (jobId) => {
     console.log("Taking job:", jobId);
+    router.push(`/userdashboard/take/${jobId}/resume-analysis`);
   };
 
   const handlePrepare = (jobId) => {
