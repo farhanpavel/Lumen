@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Newspaper,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -33,11 +34,12 @@ export default function UserSidebar() {
   const [activeItem, setActiveItem] = useState("dashboard");
 
   const menuItems = [
-    { id: "overview", label: "Overview", icon: Home },
+    // { id: "overview", label: "Overview", icon: Home },
     { id: "profile", label: "My Profile", icon: User },
-    { id: "billing", label: "Billing", icon: CreditCard },
+    { id: "preparation", label: "Preparation", icon: CreditCard },
+    { id: "jobs", label: "Jobs", icon: FileText },
+    { id: "rating", label: "Resume Rating", icon: Newspaper },
     { id: "notifications", label: "Notifications", icon: Bell, badge: 5 },
-    { id: "documents", label: "Documents", icon: FileText },
     { id: "settings", label: "Settings", icon: Settings },
     { id: "help", label: "Help & Support", icon: HelpCircle },
   ];
