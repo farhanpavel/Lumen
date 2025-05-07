@@ -444,9 +444,9 @@ export default function Signup() {
                   </div>
                 </div>
                 <p className="text-left text-white/90">
-                  &quot;This platform has completely transformed how we manage
-                  our projects. The intuitive interface and powerful features
-                  have boosted our productivity by 40%. &quot;
+                  &quot;This platform has completely transformed how we hire
+                  freshers. The intuitive interface and powerful features have
+                  boosted our productivity by 40%. &quot;
                 </p>
               </div>
 

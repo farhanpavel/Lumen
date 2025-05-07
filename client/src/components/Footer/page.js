@@ -20,7 +20,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-gray-600 mt-4 text-xs ">
-              Do you have any questions about Pavel? See the list for our most
+              Do you have any questions about Lumen? See the list for our most
               frequently asked questions. If your questions is not listed here,
               then please contact us.
             </p>

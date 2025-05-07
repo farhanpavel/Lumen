@@ -25,70 +25,83 @@ export default function Hero() {
         <div className="flex flex-col items-center justify-center mt-[4%] ">
           <div>
             <h1 className="text-6xl font-semibold leading-[4.2rem] text-[#322372]">
-              Top <span className="text-tertiary">Sales Funnel Builder</span> to
-              Boost <br /> Conversation & Maximize Profits
+              Illuminate <span className="text-tertiary">Your Path</span> to a
+              Dream Career <br /> & Bridge the Gap to{" "}
+              <span className="text-tertiary">Industry Readiness</span>
             </h1>
           </div>
           <div>
             <p className="text-[#5a5a5a] text-lg font-medium w-[65%] mx-auto text-center mt-7">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Et quae
-              consequuntur eligendi veniam tempore, commodi quas minima unde
-              corporis provident Lorem ipsum dolor sit..
+              Lumen helps fresh graduates and job seekers overcome the
+              experience gap. Upload your resume, get AI-powered mock
+              interviews, personalized preparation plans, and career path
+              generation to confidently step into your chosen field.
             </p>
           </div>
           <div className="grid grid-cols-6 gap-10 mt-10">
-            <div>
-              <CircleCheck
-                strokeWidth={2}
-                className="w-20 h-20   text-tertiary shadow-xl bg-white p-6 rounded-lg"
-              />
+            {/* Feature 1 */}
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center text-tertiary shadow-xl bg-white p-6 rounded-lg">
+                <CircleCheck strokeWidth={2} className="w-full h-full" />
+              </div>
               <h1 className="text-xs leading-4 text-center mt-2 text-[#322372] font-semibold">
-                Wordpress <br /> Developer
+                Smart Resume <br /> Upload & Onboarding
               </h1>
             </div>
-            <div>
-              <AlignHorizontalJustifyCenter
-                strokeWidth={2}
-                className="w-20 h-20   text-tertiary shadow-xl bg-white p-6 rounded-lg"
-              />
+
+            {/* Feature 2 */}
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center text-tertiary shadow-xl bg-white p-6 rounded-lg">
+                <AlignHorizontalJustifyCenter
+                  strokeWidth={2}
+                  className="w-full h-full"
+                />
+              </div>
               <h1 className="text-xs leading-4 text-center mt-2 text-[#322372] font-semibold">
-                Hello <br /> Word
+                Automated <br /> ATS Screening
               </h1>
             </div>
-            <div>
-              <AudioWaveform
-                strokeWidth={2}
-                className="w-20 h-20  text-tertiary shadow-xl bg-white p-6 rounded-lg"
-              />
+
+            {/* Feature 3 */}
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center text-tertiary shadow-xl bg-white p-6 rounded-lg">
+                <AudioWaveform strokeWidth={2} className="w-full h-full" />
+              </div>
               <h1 className="text-xs leading-4 text-center mt-2 text-[#322372] font-semibold">
-                Ki Khobor <br /> Pavel
+                AI-Powered <br /> Mock Interviews
               </h1>
             </div>
-            <div>
-              <Blinds
-                strokeWidth={2}
-                className="w-20 h-20  text-tertiary shadow-xl bg-white p-6 rounded-lg"
-              />
+
+            {/* Feature 4 */}
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center text-tertiary shadow-xl bg-white p-6 rounded-lg">
+                <Blinds strokeWidth={2} className="w-full h-full" />
+              </div>
               <h1 className="text-xs leading-4 text-center mt-2 text-[#322372] font-semibold">
-                kemon <br /> Asow
+                Insightful <br /> Resume Rating
               </h1>
             </div>
-            <div>
-              <BrickWall
-                strokeWidth={2}
-                className="w-20 h-20  text-tertiary  shadow-xl bg-white p-6 rounded-lg"
-              />
+
+            {/* Feature 5 */}
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center text-tertiary shadow-xl bg-white p-6 rounded-lg">
+                <BrickWall strokeWidth={2} className="w-full h-full" />
+              </div>
               <h1 className="text-xs leading-4 text-center mt-2 text-[#322372] font-semibold">
-                Pari na <br /> kist
+                Personalized Job & <br /> Skill Preparation
               </h1>
             </div>
-            <div>
-              <CircleArrowOutUpRight
-                strokeWidth={2}
-                className="w-20 h-20   text-tertiary shadow-xl bg-white p-6 rounded-lg"
-              />
+
+            {/* Feature 6 */}
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center text-tertiary shadow-xl bg-white p-6 rounded-lg">
+                <CircleArrowOutUpRight
+                  strokeWidth={2}
+                  className="w-full h-full"
+                />
+              </div>
               <h1 className="text-xs leading-4 text-center mt-2 text-[#322372] font-semibold">
-                Parow tw <br /> naki
+                Strategic Career <br /> Path Generation
               </h1>
             </div>
           </div>
@@ -107,14 +120,14 @@ export default function Hero() {
               }}
               className="rounded-lg px-10 border-tertiary bg-white border-[1.5px] text-tertiary hover:bg-white hover:text-tertiary"
             >
-              Signup
+              Get Started
             </Button>
           </div>
         </div>
         <div className="mt-[7%]">
           <h1 className="text-[#322372] text-2xl font-semibold text-center">
-            Recommended and used by{" "}
-            <span className="text-tertiary">amazing business</span>
+            Preparing You For{" "}
+            <span className="text-tertiary">Companies Like:</span>
           </h1>
           <div className="flex  py-10 justify-center space-x-[5%] items-center">
             <div className="flex items-center space-x-2 opacity-50">
