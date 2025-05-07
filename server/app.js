@@ -2,7 +2,6 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import userRouter from "./routes/userRouter.js";
-import resumeRouter from "./routes/resumeRoutes.js";
 import jobRoute from "./routes/jobRoute.js";
 import courseRouter from "./routes/courseRouter.js"
 import resumeRouter from "./routes/resumeRoutes.js";
