@@ -59,10 +59,10 @@ export default function SignIn() {
       Cookies.set("AccessToken", data.token.accessToken);
       Cookies.set("RefreshToken", data.token.refreshToken);
 
-      if (data.role === "student") {
+      if (data.role === "USER") {
         router.push("/onboarding/resume");
-      } else if (data.role === "admin") {
-        router.push("/admindashboard/overview");
+      } else if (data.role === "HR") {
+        router.push("/hrdashboard/create-job");
       } else {
         router.push("/dashboard");
       }

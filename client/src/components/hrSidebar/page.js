@@ -29,16 +29,14 @@ import {
 } from "@/components/ui/tooltip";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-export default function UserSidebar() {
+export default function HrSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
 
   const menuItems = [
     // { id: "overview", label: "Overview", icon: Home },
 
-    { id: "preparation", label: "Preparation", icon: CreditCard },
-    { id: "jobs", label: "Jobs", icon: FileText },
-    { id: "rating", label: "Resume Rating", icon: Newspaper },
+    { id: "create-job", label: "Create Job", icon: CreditCard },
   ];
 
   const toggleSidebar = () => {
@@ -99,7 +97,7 @@ export default function UserSidebar() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
-                    href={`/userdashboard/${item.id}`}
+                    href={`/hrdashboard/${item.id}`}
                     onClick={() => setActiveItem(item.id)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-md group relative ${
                       activeItem === item.id
