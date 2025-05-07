@@ -1,15 +1,69 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { Editor } from "@monaco-editor/react";
-import LanguageSelector, { LANGUAGE_VERSIONS } from "./LanguageSelector";
-import Output from "./Output";
-import { FaPlay } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import {
+  Play,
+  Code,
+  FileText,
+  AlertTriangle,
+  CheckCircle,
+  ChevronDown,
+  Loader2,
+  ArrowRight,
+  Clock,
+  Sparkles,
+  Lightbulb,
+  X,
+  Maximize2,
+  Minimize2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
 
-// Add state for dropdown visibility
+export const LANGUAGE_VERSIONS = {
+  javascript: "18.15.0",
+  typescript: "5.0.3",
+  python: "3.10.0",
+  java: "15.0.2",
+  csharp: "6.12.0",
+  php: "8.2.3",
+};
 
+const LANGUAGE_LABELS = {
+  javascript: "JavaScript",
+  typescript: "TypeScript",
+  python: "Python",
+  java: "Java",
+  csharp: "C#",
+  php: "PHP",
+};
 
-
+const LANGUAGE_ICONS = {
+  javascript: "js",
+  typescript: "ts",
+  python: "py",
+  java: "java",
+  csharp: "cs",
+  php: "php",
+};
 
 const CODE_SNIPPETS = {
   javascript: `\nfunction greet(name) {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("Alex");\n`,
@@ -17,7 +71,7 @@ const CODE_SNIPPETS = {
   python: `\ndef greet(name):\n\tprint("Hello, " + name + "!")\n\ngreet("Alex")\n`,
   java: `\npublic class HelloWorld {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World");\n\t}\n}\n`,
   csharp:
-      'using System;\n\nnamespace HelloWorld\n{\n\tclass Hello { \n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine("Hello World in C#");\n\t\t}\n\t}\n}\n',
+    'using System;\n\nnamespace HelloWorld\n{\n\tclass Hello { \n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine("Hello World in C#");\n\t\t}\n\t}\n}\n',
   php: "<?php\n\n$name = 'Alex';\necho $name;\n",
 };
 
@@ -34,23 +88,54 @@ export const executeCode = async (language, sourceCode) => {
   return await response.json();
 };
 
-const CodeEditor = () => {
+const Output = ({ output, isError }) => {
+  return (
+    <div className="h-full overflow-auto bg-gray-900 text-white p-4 font-mono text-sm">
+      <div className="mb-2 flex items-center">
+        <Badge
+          variant="outline"
+          className="bg-gray-800 text-gray-300 border-gray-700"
+        >
+          Output
+        </Badge>
+        {isError && (
+          <Badge
+            variant="outline"
+            className="ml-2 bg-red-900/30 text-red-300 border-red-800"
+          >
+            <AlertTriangle className="h-3 w-3 mr-1" /> Error
+          </Badge>
+        )}
+      </div>
+      <div className={`${isError ? "text-red-400" : "text-green-400"}`}>
+        {output.length > 0 ? (
+          output.map((line, i) => <div key={i}>{line || " "}</div>)
+        ) : (
+          <div className="text-gray-400 italic">No output to display</div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const CodeEditor = ({ jobId }) => {
   const editorRef = useRef();
   const router = useRouter();
-  // ... (keep existing refs and state)
-  const [showPopup, setShowPopup] = useState(false);
   const resizerRef = useRef(null);
   const leftPanelRef = useRef(null);
   const rightPanelRef = useRef(null);
 
   const [value, setValue] = useState("");
   const [language, setLanguage] = useState("javascript");
-  const [activeTab, setActiveTab] = useState("Editor");
+  const [activeTab, setActiveTab] = useState("editor");
   const [output, setOutput] = useState([]);
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes
+  const [fullscreen, setFullscreen] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const onMount = (editor) => {
     editorRef.current = editor;
     editor.focus();
@@ -59,27 +144,53 @@ const CodeEditor = () => {
   const onSelect = (language) => {
     setLanguage(language);
     setValue(CODE_SNIPPETS[language]);
-    setIsLanguageOpen(false); // Close dropdown when language is selected
   };
 
   const runCode = async () => {
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
+
     try {
       setLoading(true);
       const { run: result } = await executeCode(language, sourceCode);
       setOutput(result.output.split("\n"));
       result.stderr ? setIsError(true) : setIsError(false);
-      setActiveTab("Output");
+      setActiveTab("output");
+
+      // Simulate progress for demo purposes
+      setProgress(25);
+      setTimeout(() => setProgress(50), 500);
+      setTimeout(() => setProgress(75), 1000);
+      setTimeout(() => setProgress(100), 1500);
+      setTimeout(() => setShowDialog(true), 2000);
     } catch (error) {
       console.log(error);
-      alert("An error occurred: " + (error.message || "Unable to run code"));
+      setIsError(true);
+      setOutput([
+        "An error occurred: " + (error.message || "Unable to run code"),
+      ]);
+      setActiveTab("output");
     } finally {
       setLoading(false);
-      setShowPopup(true); // Show popup after code execution
     }
   };
 
+  // Timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Resizer functionality
   useEffect(() => {
     const resizer = resizerRef.current;
     const leftPanel = leftPanelRef.current;
@@ -93,10 +204,14 @@ const CodeEditor = () => {
     };
 
     const handleMouseMove = (e) => {
-      const rect = leftPanel.getBoundingClientRect();
-      const newWidth = e.clientX - rect.left;
-      leftPanel.style.width = `${newWidth}px`;
-      rightPanel.style.width = `calc(100% - ${newWidth}px - 4px)`;
+      const rect = leftPanel.parentElement.getBoundingClientRect();
+      const newWidth = ((e.clientX - rect.left) / rect.width) * 100;
+
+      // Limit the minimum width to 20% and maximum to 80%
+      const limitedWidth = Math.min(Math.max(newWidth, 20), 80);
+
+      leftPanel.style.width = `${limitedWidth}%`;
+      rightPanel.style.width = `${100 - limitedWidth}%`;
     };
 
     const handleMouseUp = () => {
@@ -111,165 +226,346 @@ const CodeEditor = () => {
     };
   }, []);
 
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const getTimeColor = () => {
+    if (timeLeft < 300) return "text-red-600"; // Less than 5 minutes
+    if (timeLeft < 600) return "text-amber-600"; // Less than 10 minutes
+    return "text-[#322372]";
+  };
+
   return (
-      <div className="flex flex-col bg-white h-screen">
-        {showPopup && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]">
-              <div className="bg-white p-6 rounded-lg max-w-sm w-full shadow-xl">
-                <h3 className="text-lg font-semibold mb-4">Code Submitted!</h3>
-                <p className="text-gray-600 mb-6">
-                  Your code has been successfully executed. Would you like to
-                  proceed to the live interview page?
-                </p>
-                <div className="flex justify-end space-x-3">
-                  <button
-                      onClick={() => setShowPopup(false)}
-                      className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors"
-                  >
-                    Stay Here
-                  </button>
-                  <button
-                      onClick={() => router.push("/userdashboard/interview")}
-                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                  >
-                    Go to Live Interview
-                  </button>
-                </div>
-              </div>
-            </div>
-        )}
-        <div className="flex justify-between items-center py-2 px-6 bg-gray-100">
-          <LanguageSelector language={language} onSelect={onSelect}
-                            isOpen={isLanguageOpen}
-                            toggle={() => setIsLanguageOpen(!isLanguageOpen)}
-          />
-          <div className="flex">
-            <button
-                onClick={() => setActiveTab("Editor")}
-                className={`px-4 py-2 ${
-                    activeTab === "Editor"
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-50 text-gray-900"
-                } rounded-l-sm`}
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 shadow-sm py-2 px-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <h1 className="text-xl font-semibold text-[#322372]">
+              Coding Assessment
+            </h1>
+            <Badge
+              variant="outline"
+              className="bg-[#7657ff]/10 text-[#7657ff] border-[#7657ff]/20"
             >
-              Editor
-            </button>
-            <button
-                onClick={() => setActiveTab("Output")}
-                className={`px-4 py-2 ${
-                    activeTab === "Output"
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-50 text-gray-900"
-                }`}
-            >
-              Output
-            </button>
+              Problem #215
+            </Badge>
           </div>
-          <div className="flex items-center space-x-2">
-            <button
-                onClick={runCode}
-                disabled={loading}
-                className="flex items-center gap-2 bg-blue-500 p-2 rounded text-white text-sm hover:bg-blue-600 transition-colors"
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full">
+              <Clock className={`h-4 w-4 ${getTimeColor()}`} />
+              <span className={`font-mono font-medium ${getTimeColor()}`}>
+                {formatTime(timeLeft)}
+              </span>
+            </div>
+
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setFullscreen(!fullscreen)}
+              className="border-[#7657ff]/30 text-[#7657ff] hover:bg-[#7657ff]/10"
+            >
+              {fullscreen ? (
+                <Minimize2 className="h-4 w-4" />
+              ) : (
+                <Maximize2 className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div
+        className={`flex flex-1 overflow-hidden ${
+          fullscreen ? "fixed inset-0 z-50 bg-white" : ""
+        }`}
+      >
+        {/* Left Panel - Editor/Output */}
+        <div
+          ref={leftPanelRef}
+          className="h-full overflow-hidden"
+          style={{ width: "50%" }}
+        >
+          {/* Editor Controls */}
+          <div className="flex justify-between items-center py-2 px-4 bg-gray-50 border-b border-gray-200">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="border-[#7657ff]/30 text-[#7657ff] hover:bg-[#7657ff]/10"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 text-gray-700 w-5 h-5 rounded flex items-center justify-center text-xs font-mono">
+                      {LANGUAGE_ICONS[language]}
+                    </div>
+                    <span>{LANGUAGE_LABELS[language]}</span>
+                    <ChevronDown className="h-4 w-4 opacity-50" />
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {Object.keys(LANGUAGE_LABELS).map((lang) => (
+                  <DropdownMenuItem key={lang} onClick={() => onSelect(lang)}>
+                    <div className="flex items-center gap-2">
+                      <div className="bg-gray-200 text-gray-700 w-5 h-5 rounded flex items-center justify-center text-xs font-mono">
+                        {LANGUAGE_ICONS[lang]}
+                      </div>
+                      <span>{LANGUAGE_LABELS[lang]}</span>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="bg-gray-100 border border-gray-200">
+                <TabsTrigger
+                  value="editor"
+                  className="data-[state=active]:bg-[#7657ff] data-[state=active]:text-white"
+                >
+                  <Code className="h-4 w-4 mr-2" />
+                  Editor
+                </TabsTrigger>
+                <TabsTrigger
+                  value="output"
+                  className="data-[state=active]:bg-[#7657ff] data-[state=active]:text-white"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Output
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            <Button
+              onClick={runCode}
+              disabled={loading}
+              className="bg-[#7657ff] hover:bg-[#322372]"
             >
               {loading ? (
-                  "Submitting..."
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Running...</span>
+                </div>
               ) : (
-                  <>
-                    <FaPlay className="inline-block" /> Submit Code
-                  </>
+                <div className="flex items-center gap-2">
+                  <Play className="h-4 w-4" />
+                  <span>Run & Submit</span>
+                </div>
               )}
-            </button>
+            </Button>
+          </div>
+
+          {/* Editor/Output Content */}
+          <div className="h-[calc(100%-48px)] overflow-hidden">
+            {activeTab === "editor" ? (
+              <Editor
+                options={{
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: true,
+                  fontSize: 14,
+                  fontFamily: "'Fira Code', monospace",
+                  lineNumbers: "on",
+                  roundedSelection: false,
+                  scrollBars: "auto",
+                  cursorStyle: "line",
+                  automaticLayout: true,
+                }}
+                height="100%"
+                theme="vs-dark"
+                language={language}
+                defaultValue={CODE_SNIPPETS[language]}
+                onMount={onMount}
+                value={value}
+                onChange={(value) => setValue(value)}
+              />
+            ) : (
+              <Output output={output} isError={isError} />
+            )}
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden relative">
-          <div
-              ref={leftPanelRef}
-              className="flex-1 overflow-auto"
-              style={{ width: "50%" }}
-          >
-            {activeTab === "Editor" ? (
-                <Editor
-                    options={{
-                      minimap: { enabled: false },
-                      scrollBeyondLastLine: false,
-                    }}
-                    height="100%"
-                    theme="vs-light"
-                    language={language}
-                    defaultValue={CODE_SNIPPETS[language]}
-                    onMount={onMount}
-                    value={value}
-                    onChange={(value) => setValue(value)}
-                />
-            ) : (
-                <Output output={output} isError={isError} />
-            )}
-          </div>
+        {/* Resizer */}
+        <div
+          ref={resizerRef}
+          className="w-1 bg-gray-200 hover:bg-[#7657ff] cursor-ew-resize z-10 transition-colors"
+        />
 
-          <div
-              ref={resizerRef}
-              className="w-1 bg-gray-200 hover:bg-blue-500 cursor-ew-resize z-10"
-          />
-
-          <div
-              ref={rightPanelRef}
-              className="flex-1 overflow-hidden bg-gray-50 p-4"
-              style={{ width: "50%" }}
-          >
-            <div className="text-gray-500 text-sm mb-10">
-              <div className="font-bold text-lg mb-2 text-gray-700">Problem #215 - Distinct Common Palindromic
-                Subsequences
+        {/* Right Panel - Problem Statement */}
+        <div
+          ref={rightPanelRef}
+          className="h-full overflow-auto bg-white"
+          style={{ width: "50%" }}
+        >
+          <div className="p-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-[#322372] mb-2">
+                  Distinct Common Palindromic Subsequences
+                </h2>
+                <div className="flex items-center gap-2 mb-4">
+                  <Badge
+                    variant="outline"
+                    className="bg-red-50 text-red-700 border-red-200"
+                  >
+                    Hard
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="bg-[#322372]/10 text-[#322372] border-[#322372]/20"
+                  >
+                    Dynamic Programming
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="bg-[#322372]/10 text-[#322372] border-[#322372]/20"
+                  >
+                    Strings
+                  </Badge>
+                </div>
               </div>
-              <div className="space-y-4">
-                <p><strong>Difficulty:</strong> 🔴 Hard</p>
 
-                <p><strong>Problem Statement:</strong><br/>
-                  Given two strings <code>s1</code> and <code>s2</code>, return the number of <strong>distinct
-                    palindromic subsequences</strong> that appear in both strings. A subsequence is palindromic if it
-                  reads the same forward and backward.</p>
-
-                <p><strong>Constraints:</strong>
-                  <ul className="list-disc pl-6">
-                    <li><code>1 ≤ s1.length, s2.length ≤ 1000</code></li>
-                    <li>Strings consist of lowercase English letters only</li>
-                    <li>Result must fit in 32-bit integer</li>
-                  </ul>
+              <div className="prose prose-slate max-w-none">
+                <h3 className="text-lg font-semibold text-[#322372]">
+                  Problem Statement
+                </h3>
+                <p>
+                  Given two strings <code>s1</code> and <code>s2</code>, return
+                  the number of{" "}
+                  <strong>distinct palindromic subsequences</strong> that appear
+                  in both strings. A subsequence is palindromic if it reads the
+                  same forward and backward.
                 </p>
 
-                <p><strong>Sample Input 1:</strong><br/>
-                  <code>s1 = "bcdcb", s2 = "bcdcbe"</code><br/>
-                  <strong>Output:</strong> 7<br/>
-                  <strong>Explanation:</strong> Common palindromic subsequences are ["b", "c", "d", "bcb", "cdc",
-                  "bcdcb", "cbc"]</p>
+                <h3 className="text-lg font-semibold text-[#322372] mt-6">
+                  Constraints
+                </h3>
+                <ul className="list-disc pl-6">
+                  <li>
+                    <code>1 ≤ s1.length, s2.length ≤ 1000</code>
+                  </li>
+                  <li>Strings consist of lowercase English letters only</li>
+                  <li>Result must fit in 32-bit integer</li>
+                </ul>
 
-                <p><strong>Sample Input 2:</strong><br/>
-                  <code>s1 = "abac", s2 = "acab"</code><br/>
-                  <strong>Output:</strong> 4<br/>
-                  <strong>Explanation:</strong> Common palindromic subsequences are ["a", "b", "c", "aa"]</p>
+                <h3 className="text-lg font-semibold text-[#322372] mt-6">
+                  Examples
+                </h3>
+                <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">
+                  <p className="font-semibold">Example 1:</p>
+                  <p>
+                    <strong>Input:</strong>{" "}
+                    <code>s1 = "bcdcb", s2 = "bcdcbe"</code>
+                    <br />
+                    <strong>Output:</strong> <code>7</code>
+                    <br />
+                    <strong>Explanation:</strong> Common palindromic
+                    subsequences are ["b", "c", "d", "bcb", "cdc", "bcdcb",
+                    "cbc"]
+                  </p>
+                </div>
 
-                <div className="bg-yellow-100 p-3 rounded">
-                  <strong>💡 Solution Approach Hints:</strong>
-                  <ol className="list-decimal pl-6 mt-2">
-                    <li>Use dynamic programming with 3D memoization (i, j, k)</li>
-                    <li>Track start and end characters for palindrome formation</li>
-                    <li>Handle duplicate subsequences using bitmask or set operations</li>
+                <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+                  <p className="font-semibold">Example 2:</p>
+                  <p>
+                    <strong>Input:</strong>{" "}
+                    <code>s1 = "abac", s2 = "acab"</code>
+                    <br />
+                    <strong>Output:</strong> <code>4</code>
+                    <br />
+                    <strong>Explanation:</strong> Common palindromic
+                    subsequences are ["a", "b", "c", "aa"]
+                  </p>
+                </div>
+              </div>
+
+              <Alert className="bg-[#7657ff]/10 border-[#7657ff]/20">
+                <Lightbulb className="h-4 w-4 text-[#7657ff]" />
+                <AlertDescription className="text-[#322372]">
+                  <p className="font-semibold mb-2">Solution Approach Hints:</p>
+                  <ol className="list-decimal pl-6 space-y-1">
+                    <li>
+                      Use dynamic programming with 3D memoization (i, j, k)
+                    </li>
+                    <li>
+                      Track start and end characters for palindrome formation
+                    </li>
+                    <li>
+                      Handle duplicate subsequences using bitmask or set
+                      operations
+                    </li>
                     <li>Optimize space complexity using rolling arrays</li>
                   </ol>
-                </div>
+                </AlertDescription>
+              </Alert>
 
-                <div className="bg-blue-100 p-3 rounded">
-                  <strong>⚡ Expected Complexity:</strong>
-                  <ul className="list-disc pl-6 mt-2">
-                    <li>Time: O(n^3) with optimizations</li>
-                    <li>Space: O(n^2) using clever state compression</li>
-                  </ul>
-                </div>
+              <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+                <p className="font-semibold text-[#322372] mb-2">
+                  Expected Complexity:
+                </p>
+                <ul className="list-disc pl-6 space-y-1 text-gray-700">
+                  <li>Time: O(n³) with optimizations</li>
+                  <li>Space: O(n²) using clever state compression</li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Submission Dialog */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-[#322372]">
+              <Sparkles className="h-5 w-5 text-[#7657ff]" /> Code Submission
+              Complete
+            </DialogTitle>
+            <DialogDescription>
+              Your code has been successfully executed and submitted for review.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Submission Status</span>
+                <span className="font-medium text-green-600">Complete</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+            </div>
+
+            <Alert className="bg-green-50 border-green-200">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800">
+                Your solution has been submitted. Would you like to proceed to
+                the live interview?
+              </AlertDescription>
+            </Alert>
+          </div>
+
+          <DialogFooter className="flex sm:justify-between">
+            <Button
+              variant="outline"
+              onClick={() => setShowDialog(false)}
+              className="border-[#7657ff]/30 text-[#7657ff] hover:bg-[#7657ff]/10"
+            >
+              <X className="h-4 w-4 mr-2" /> Stay Here
+            </Button>
+            <Button
+              onClick={() => router.push("/userdashboard/interview")}
+              className="bg-[#7657ff] hover:bg-[#322372]"
+            >
+              <ArrowRight className="h-4 w-4 mr-2" /> Go to Live Interview
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 
