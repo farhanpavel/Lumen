@@ -12,12 +12,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { url } from "@/components/Url/page";
 
 export default function ResumeAnalysisPage() {
+  const router = useRouter();
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState(null); // null, 'uploading', 'success', 'error'
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleDragOver = (e) => {
@@ -49,21 +54,63 @@ export default function ResumeAnalysisPage() {
     }
   };
 
-  const handleFileUpload = (selectedFile) => {
+  const handleFileUpload = async (selectedFile) => {
     setFile(selectedFile);
     setUploadStatus("uploading");
+    setIsLoading(true);
 
-    // Simulate upload progress
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 5;
-      setUploadProgress(progress);
+    // Create FormData for the file upload
+    const formData = new FormData();
+    formData.append("file", selectedFile);
 
-      if (progress >= 100) {
-        clearInterval(interval);
-        setUploadStatus("success");
+    try {
+      // Get JWT token from cookies
+      const token = Cookies.get("AccessToken");
+      if (!token) {
+        throw new Error("Authentication token not found");
       }
-    }, 100);
+
+      // Simulate upload progress
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += 5;
+        setUploadProgress(progress);
+        if (progress >= 95) clearInterval(progressInterval);
+      }, 100);
+
+      // Make the API call
+      const response = await fetch(`${url}/api/resume`, {
+        method: "POST",
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: formData,
+      });
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Upload failed");
+      }
+
+      const data = await response.json();
+      setUploadStatus("success");
+
+      // Redirect to questions page after 1.5 seconds
+      setTimeout(() => {
+        router.push("/onboarding/question");
+      }, 1500);
+    } catch (error) {
+      console.error("Upload error:", error);
+      setUploadStatus("error");
+      setIsLoading(false);
+      setTimeout(() => {
+        setUploadStatus(null);
+        setFile(null);
+      }, 3000);
+    }
   };
 
   const containerVariants = {
@@ -167,8 +214,16 @@ export default function ResumeAnalysisPage() {
                       <Button
                         onClick={() => fileInputRef.current.click()}
                         className="bg-[#7657ff] hover:bg-[#7657ff]/90"
+                        disabled={isLoading}
                       >
-                        Select Resume
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Uploading...
+                          </>
+                        ) : (
+                          "Select Resume"
+                        )}
                       </Button>
                     </div>
 
@@ -188,8 +243,10 @@ export default function ResumeAnalysisPage() {
                         <h3 className="font-medium text-gray-900">
                           {file.name}
                         </h3>
-                        {uploadStatus === "success" && (
+                        {uploadStatus === "success" ? (
                           <CheckCircle className="h-5 w-5 text-green-500" />
+                        ) : (
+                          <Loader2 className="h-5 w-5 text-[#7657ff] animate-spin" />
                         )}
                       </div>
                       <p className="text-sm text-gray-500 mt-1">
@@ -215,34 +272,13 @@ export default function ResumeAnalysisPage() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.3 }}
                         >
-                          <div className="bg-green-50 border border-green-100 rounded-lg p-4 mb-6">
-                            <div className="flex items-center gap-2 text-green-700 font-medium mb-2">
+                          <div className="bg-green-50 border border-green-100 rounded-lg p-4">
+                            <div className="flex items-center gap-2 text-green-700 font-medium">
                               <CheckCircle className="h-5 w-5" />
-                              <span>Resume uploaded successfully!</span>
+                              <span>
+                                Upload complete! Redirecting to questions...
+                              </span>
                             </div>
-                            <p className="text-sm text-green-600">
-                              Our AI is now analyzing your resume. This will
-                              take just a moment.
-                            </p>
-                          </div>
-
-                          <div className="flex items-center gap-3 text-[#322372] bg-[#7657ff]/5 p-4 rounded-lg">
-                            <Loader2 className="h-5 w-5 animate-spin" />
-                            <span className="font-medium">
-                              Analyzing your resume...
-                            </span>
-                          </div>
-
-                          <div className="mt-8">
-                            <Button
-                              className="w-full bg-gradient-to-r from-[#7657ff] to-[#322372] hover:from-[#322372] hover:to-[#7657ff] group"
-                              onClick={() => {
-                                // Handle view analysis action
-                              }}
-                            >
-                              <span>View Analysis Results</span>
-                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </Button>
                           </div>
                         </motion.div>
                       )}

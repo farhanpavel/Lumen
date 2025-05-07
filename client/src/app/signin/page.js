@@ -60,7 +60,7 @@ export default function SignIn() {
       Cookies.set("RefreshToken", data.token.refreshToken);
 
       if (data.role === "student") {
-        router.push("/userdashboard/overview");
+        router.push("/onboarding/resume");
       } else if (data.role === "admin") {
         router.push("/admindashboard/overview");
       } else {

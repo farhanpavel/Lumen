@@ -15,6 +15,7 @@ import {
   Code,
   Languages,
   Award,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Cookies from "js-cookie";
+import { url } from "@/components/Url/page";
 
 export default function ResumeQuestionsPage() {
   const router = useRouter();
@@ -44,6 +47,7 @@ export default function ResumeQuestionsPage() {
   const [projectLinks, setProjectLinks] = useState([
     { title: "", url: "", description: "" },
   ]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form data state
   const [formData, setFormData] = useState({
@@ -52,12 +56,15 @@ export default function ResumeQuestionsPage() {
     education: "",
     skills: [],
     languages: [],
+    frameworks: [],
     jobPreference: "",
     availability: "",
     salaryExpectation: "",
     relocation: false,
     aboutYou: "",
-    projects: [],
+    industry: "",
+    certifications: "",
+    otherTech: "",
   });
 
   // Define all steps
@@ -120,18 +127,46 @@ export default function ResumeQuestionsPage() {
     }
   };
 
-  const handleFinish = () => {
-    // Save all project links to form data
-    const updatedFormData = {
+  const handleFinish = async () => {
+    setIsSubmitting(true);
+
+    // Prepare the final data
+    const finalData = {
       ...formData,
-      projects: projectLinks,
+      projects: projectLinks.filter(
+        (project) => project.title && (project.url || project.description)
+      ),
     };
 
-    // Here you would typically send the data to your backend
-    console.log("Final form data:", updatedFormData);
+    try {
+      const token = Cookies.get("AccessToken");
+      if (!token) {
+        throw new Error("Authentication token not found");
+      }
 
-    // Redirect to dashboard
-    router.push("/userdashboard/overview");
+      const response = await fetch(`${url}/api/resume/details`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(finalData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to save resume details");
+      }
+
+      const data = await response.json();
+      alert("Resume details saved successfully!");
+      router.push("/userdashboard/overview");
+    } catch (error) {
+      console.error("Error saving resume details:", error);
+      alert("Failed to save resume details");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Animation variants
@@ -712,9 +747,19 @@ export default function ResumeQuestionsPage() {
                     type="button"
                     onClick={handleFinish}
                     className="bg-gradient-to-r from-[#7657ff] to-[#322372] hover:from-[#322372] hover:to-[#7657ff]"
+                    disabled={isSubmitting}
                   >
-                    Finish
-                    <CheckCircle className="h-4 w-4 ml-2" />
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        Finish
+                        <CheckCircle className="h-4 w-4 ml-2" />
+                      </>
+                    )}
                   </Button>
                 )}
               </CardFooter>
