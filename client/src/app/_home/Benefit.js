@@ -5,7 +5,7 @@ import {
   Zap,
   Shield,
   Clock,
-  Users,
+  Users, // Consider if this icon/concept fits job seekers or replace
   ArrowRight,
 } from "lucide-react";
 
@@ -13,39 +13,39 @@ export default function Benefit() {
   const benefits = [
     {
       icon: <Zap className="h-8 w-8 text-tertiary" />,
-      title: "Increased Productivity",
+      title: "Fast-Track Your Applications", // Rewritten title
       description:
-        "Our tools automate repetitive tasks, allowing your team to focus on what truly matters. Users report saving up to 15 hours per week.",
+        "Automatically screen your resume against job requirements (ATS check) and get instant feedback to save time.", // Rewritten description
+    },
+    {
+      icon: <Award className="h-8 w-8 text-tertiary" />, // Changed icon to Award for improvement focus
+      title: "Boost Your Interview Confidence", // Rewritten title
+      description:
+        "Practice with AI mock interviews tailored to your target role and get personalized feedback to perform your best.", // Rewritten description
+    },
+    {
+      icon: <CheckCircle className="h-8 w-8 text-tertiary" />, // Changed icon to CheckCircle for readiness focus
+      title: "Optimize Your Resume & Cover Letter", // Rewritten title
+      description:
+        "Get an objective rating for your resume and use our AI assistant to craft compelling cover letters.", // Rewritten description
     },
     {
       icon: <Shield className="h-8 w-8 text-tertiary" />,
-      title: "Enhanced Security",
+      title: "Personalized Preparation", // Rewritten title
       description:
-        "Enterprise-grade security protocols protect your data at every level. We maintain strict compliance with industry standards.",
+        "Receive targeted preparation plans based on your current skills and the specific job roles you're applying for.", // Rewritten description
     },
     {
-      icon: <Clock className="h-8 w-8 text-tertiary" />,
-      title: "Time Efficiency",
+      icon: <Clock className="h-8 w-8 text-tertiary" />, // Keep Clock icon for time
+      title: "Clear Career Pathing", // Rewritten title
       description:
-        "Streamlined workflows and intuitive interfaces reduce learning curves and help your team accomplish more in less time.",
+        "Visualize potential career paths and understand the steps needed to reach your professional goals.", // Rewritten description
     },
     {
-      icon: <Users className="h-8 w-8 text-tertiary" />,
-      title: "Better Collaboration",
+      icon: <Users className="h-8 w-8 text-tertiary" />, // Keep Users icon but rephrase benefit
+      title: "Unlock Your Potential", // Rewritten title
       description:
-        "Real-time collaboration features enable seamless teamwork regardless of physical location or time zone differences.",
-    },
-    {
-      icon: <Award className="h-8 w-8 text-tertiary" />,
-      title: "Quality Results",
-      description:
-        "Our intelligent systems help eliminate human error and ensure consistent, high-quality outputs for all your projects.",
-    },
-    {
-      icon: <CheckCircle className="h-8 w-8 text-tertiary" />,
-      title: "Cost Reduction",
-      description:
-        "By optimizing resources and reducing waste, our platform helps businesses save an average of 30% on operational costs.",
+        "Bridge the gap between your current skills and industry demands to land your dream job faster.", // Rewritten description
     },
   ];
 
@@ -55,16 +55,22 @@ export default function Benefit() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div className="p-6">
+              {/* These numbers might need to be actual or placeholder stats relevant to job seekers */}
               <p className="text-4xl font-bold text-tertiary mb-2">93%</p>
-              <p className="text-gray-600">Customer satisfaction rate</p>
+              <p className="text-gray-600">Users felt more prepared</p>{" "}
+              {/* Reworded */}
             </div>
             <div className="p-6">
-              <p className="text-4xl font-bold text-tertiary mb-2">30%</p>
-              <p className="text-gray-600">Average cost reduction</p>
+              <p className="text-4xl font-bold text-tertiary mb-2">2X</p>{" "}
+              {/* Example stat */}
+              <p className="text-gray-600">Faster application process</p>{" "}
+              {/* Reworded */}
             </div>
             <div className="p-6">
-              <p className="text-4xl font-bold text-tertiary mb-2">15+</p>
-              <p className="text-gray-600">Hours saved per week</p>
+              <p className="text-4xl font-bold text-tertiary mb-2">100+</p>{" "}
+              {/* Example stat */}
+              <p className="text-gray-600">Mock interviews completed</p>{" "}
+              {/* Reworded */}
             </div>
           </div>
         </div>
@@ -75,12 +81,14 @@ export default function Benefit() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Why Choose <span className="text-tertiary">Our Platform</span>
+              Why Choose <span className="text-tertiary">Lumen?</span>{" "}
+              {/* Changed "Our Platform" to "Lumen?" */}
             </h2>
             <p className="text-[#5a5a5a] text-sm font-medium w-[50%] mx-auto text-center mt-3 ">
-              Our comprehensive solution provides numerous advantages that help
-              your business thrive in today&apos;s competitive landscape.
-            </p>
+              Lumen empowers you to navigate the job market with confidence,
+              bridging the gap between your skills and industry demands.
+            </p>{" "}
+            {/* Rewritten description */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -110,24 +118,25 @@ export default function Benefit() {
             <div className="md:flex items-center gap-8">
               <div className="md:w-1/3 mb-6 md:mb-0">
                 <div className="aspect-square bg-gray-200 rounded-xl overflow-hidden">
-                  <div className="w-full h-full bg-tertiary/20 flex items-center justify-center">
-                    <span className="text-tertiary font-bold text-xl">
-                      Company Logo
-                    </span>
-                  </div>
+                  <img
+                    src="/images/user_story.jpg"
+                    alt="Success story user"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
               <div className="md:w-2/3">
                 <p className="text-xl italic mb-6">
-                  &quot;Implementing this platform has been transformative for
-                  our business. We&apos;ve seen dramatic improvements in
-                  efficiency, team collaboration, and overall output quality.
-                  The ROI has been exceptional. &quot;
+                  &quot;Finding my first job felt overwhelming, but Lumen
+                  changed everything. The resume rating helped me improve my CV,
+                  the AI interviews boosted my confidence, and the personalized
+                  preparation made me feel truly ready. I landed a great role
+                  just weeks after using it! &quot;
                 </p>
                 <div>
-                  <p className="font-bold text-lg">Sarah Johnson</p>
+                  <p className="font-bold text-lg">John Doe</p>
                   <p className="text-gray-600">
-                    Chief Operations Officer, TechCorp Inc.
+                    Fresh Graduate & Software Engineer
                   </p>
                 </div>
               </div>
@@ -140,14 +149,16 @@ export default function Benefit() {
       <div className="bg-occean py-20 px-4">
         <div className="container mx-auto max-w-6xl text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to Experience These Benefits?
-          </h2>
+            Ready to Land Your Dream Job?
+          </h2>{" "}
+          {/* Rewritten Heading */}
           <p className="text-lg text-white/80 max-w-2xl mx-auto mb-10">
-            Join thousands of satisfied customers who have transformed their
-            businesses with our platform.
-          </p>
+            Join job seekers who are getting interview-ready and finding
+            opportunities with Lumen.
+          </p>{" "}
+          {/* Rewritten description */}
           <button className="px-8 py-4 bg-white text-occean font-bold rounded-full hover:bg-white/90 transition-colors flex items-center gap-2 mx-auto">
-            Contact us
+            Get Started Now {/* Rewritten Button Text */}
             <ArrowRight className="h-5 w-5" />
           </button>
         </div>

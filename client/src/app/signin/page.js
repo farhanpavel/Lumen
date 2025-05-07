@@ -343,7 +343,7 @@ export default function SignIn() {
         <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
 
         <img
-          src="https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          src="https://images.pexels.com/photos/936722/pexels-photo-936722.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
           alt="Office"
           className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-60"
         />
@@ -355,11 +355,11 @@ export default function SignIn() {
         >
           <div className="max-w-md text-center">
             <h2 className="text-5xl font-bold mb-6 leading-tight">
-              Transform Your Digital Experience
+              Transform Your Job Hunting Experience
             </h2>
             <p className="text-xl text-white/90 mb-8">
               Access your account to unlock powerful tools and resources
-              designed to elevate your business.
+              designed to elevate your hunt.
             </p>
 
             <div className="space-y-6 mt-12">
@@ -368,7 +368,7 @@ export default function SignIn() {
                   <CheckCircle className="h-5 w-5 text-white" />
                 </div>
                 <p className="text-left text-lg">
-                  Streamlined workflow management
+                  AI-Powered Resume Analysis and Optimization
                 </p>
               </div>
 
@@ -377,7 +377,8 @@ export default function SignIn() {
                   <CheckCircle className="h-5 w-5 text-white" />
                 </div>
                 <p className="text-left text-lg">
-                  Advanced analytics and reporting
+                  Advanced job matching algorithms for personalized
+                  recommendations
                 </p>
               </div>
 
@@ -386,7 +387,7 @@ export default function SignIn() {
                   <CheckCircle className="h-5 w-5 text-white" />
                 </div>
                 <p className="text-left text-lg">
-                  Seamless team collaboration tools
+                  Career resources, tips, and expert advice at your fingertips
                 </p>
               </div>
             </div>
