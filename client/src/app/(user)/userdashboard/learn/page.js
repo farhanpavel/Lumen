@@ -19,11 +19,12 @@ export default function Page() {
   const [error, setError] = useState(null);
   const token = Cookies.get("AccessToken");
   useEffect(() => {
+    const jobId = Cookies.get("jobId");
     const fetchPlanner = async () => {
       try {
         setLoading(true);
         const response = await fetch(
-          "http://localhost:4000/api/planner/generate/f7e29eaf-106b-4072-8899-e3cf679d2f70",
+          `http://localhost:4000/api/planner/generate/${jobId}`,
           {
             method: "GET",
             headers: {

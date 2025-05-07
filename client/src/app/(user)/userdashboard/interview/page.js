@@ -39,7 +39,7 @@ export default function InterviewPage() {
   const searchParams = useSearchParams();
   const audioRef = useRef(null);
 
-  const jobId = "f7e29eaf-106b-4072-8899-e3cf679d2f70";
+  const jobId = Cookies.get("jobId");
 
   const difficulty = searchParams.get("difficulty") || "medium";
 

@@ -193,7 +193,7 @@ export const validateResume = async (req, res) => {
           {
             method: 'GET',
             headers: {
-              'x-rapidapi-key': 'bb834ebd60mshbda2ab24352bae8p137102jsne7dad0e3970e',
+              'x-rapidapi-key': '4dc75f420cmshba631ff0cd5a0d9p1f3f93jsneca687b248c7',
               'x-rapidapi-host': 'linkedin-data-api.p.rapidapi.com'
             }
           }
@@ -294,7 +294,7 @@ export const createQuestions = async (req, res) => {
           {
             method: 'GET',
             headers: {
-              'x-rapidapi-key': 'bb834ebd60mshbda2ab24352bae8p137102jsne7dad0e3970e',
+              'x-rapidapi-key': '4dc75f420cmshba631ff0cd5a0d9p1f3f93jsneca687b248c7',
               'x-rapidapi-host': 'linkedin-data-api.p.rapidapi.com'
             }
           }

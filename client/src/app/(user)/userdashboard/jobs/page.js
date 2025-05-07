@@ -19,7 +19,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { url } from "@/components/Url/page";
 import { useRouter } from 'next/navigation';
-import CodeEditor from "@/components/ui/CodeEditor"; // or 'next/navigation'
+import CodeEditor from "@/components/ui/CodeEditor";
+import Cookies from "js-cookie"; // or 'next/navigation'
 
 // Inside component
 
@@ -79,10 +80,9 @@ export default function JobsPage() {
           "https://linkedin-data-api.p.rapidapi.com/search-jobs-v2?keywords=Computer%20Science&locationId=103363366&datePosted=anyTime&sort=mostRelevant",
           {
             headers: {
-              "x-rapidapi-key":
-                "bb834ebd60mshbda2ab24352bae8p137102jsne7dad0e3970e", // Replace with your actual key or use environment variables
-              "x-rapidapi-host": "linkedin-data-api.p.rapidapi.com",
-            },
+              'x-rapidapi-key': '4dc75f420cmshba631ff0cd5a0d9p1f3f93jsneca687b248c7',
+              'x-rapidapi-host': 'linkedin-data-api.p.rapidapi.com'
+            }
           }
         );
         if (!response.ok)
@@ -108,6 +108,8 @@ export default function JobsPage() {
 
   const handlePrepare = (jobId) => {
     console.log("Preparing for job:", jobId);
+    Cookies.set("jobId",jobId);
+    router.push("/userdashboard/learn")
   };
 
   const clearAllFilters = () => {
