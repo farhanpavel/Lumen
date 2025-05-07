@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,9 +11,65 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
+  id       String  @id @default(uuid())
+  email    String  @unique
   password String
   name     String
-  role     String
+  role     String  @default("USER") // e.g., "USER", "HR", "ADMIN"
+  jobs     Job[]   @relation("PostedJobs")
+  resume   Resume?
+}
+
+model Resume {
+  id        String  @id @default(uuid())
+  resumeUrl String
+  summary   String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @unique
+  status    Boolean @default(false)
+}
+
+model Job {
+  id              String          @id @default(uuid())
+  title           String
+  description     String
+  company         String
+  location        String?
+  remote          Boolean         @default(false)
+  salaryMin       Int?
+  salaryMax       Int?
+  salaryCurrency  String?         @default("BDT")
+  employmentType  EmploymentType
+  experienceLevel ExperienceLevel
+  postedById      String
+  postedBy        User            @relation("PostedJobs", fields: [postedById], references: [id])
+  keywords        Keyword[]       @relation("JobKeywords")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  expiresAt       DateTime?
+  isActive        Boolean         @default(true)
+}
+
+model Keyword {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  jobs      Job[]    @relation("JobKeywords")
+  createdAt DateTime @default(now())
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  TEMPORARY
+  INTERNSHIP
+  VOLUNTEER
+}
+
+enum ExperienceLevel {
+  ENTRY_LEVEL
+  ASSOCIATE
+  MID_SENIOR_LEVEL
+  DIRECTOR
+  EXECUTIVE
 }

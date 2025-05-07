@@ -1,6 +1,7 @@
 import prisma from "../db.js";
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
+import "dotenv/config";
 const generateToken = (user) => {
   const accessToken = jwt.sign(
     { id: user.id, email: user.email, role: user.role },
