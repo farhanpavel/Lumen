@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
+import Cookies from "js-cookie";
 
 export const LANGUAGE_VERSIONS = {
   javascript: "18.15.0",
@@ -559,7 +560,10 @@ const CodeEditor = ({ jobId }) => {
               <X className="h-4 w-4 mr-2" /> Stay Here
             </Button>
             <Button
-              onClick={() => router.push("/userdashboard/interview")}
+              onClick={()=>{
+                Cookies.set("jobId", jobId);
+                router.push("/userdashboard/interview");
+              }}
               className="bg-[#7657ff] hover:bg-[#322372]"
             >
               <ArrowRight className="h-4 w-4 mr-2" /> Go to Live Interview
