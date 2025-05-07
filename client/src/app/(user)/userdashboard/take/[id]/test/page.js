@@ -12,7 +12,7 @@ import {
   Send,
   BookOpen,
   Lightbulb,
-  Loader2,
+  Loader2,Code
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -357,10 +357,10 @@ export default function ExamPage({ params }) {
             <CardFooter className="bg-gray-50 border-t border-gray-200 p-6">
               <div className="w-full flex flex-col sm:flex-row gap-4 justify-between">
                 <Button
-                  onClick={() => router.push("/userdashboard/overview")}
+                  onClick={() => router.push(`/userdashboard/take/${params.id}/coding-test`)}
                   className="bg-[#7657ff] hover:bg-[#322372]"
                 >
-                  <ArrowLeft className="h-4 w-4 mr-2" /> Return to Dashboard
+                  <Code  className="h-4 w-4 mr-2" /> Take coding Test
                 </Button>
 
                 <Button
