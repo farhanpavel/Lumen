@@ -19,4 +19,11 @@ model User {
   password String
   name     String
   role     String
+  resume  Resume?
+}
+
+model Resume {
+  id        String @id @default(uuid())
+  resumeUrl String
+  summary   String
 }
