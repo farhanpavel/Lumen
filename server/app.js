@@ -6,6 +6,7 @@ import jobRoute from "./routes/jobRoute.js";
 import courseRouter from "./routes/courseRouter.js";
 import resumeRouter from "./routes/resumeRoutes.js";
 import Pathrouter from "./routes/plannerRoute.js";
+import ratingRouter from "./routes/ratingRouter.js";
 
 const app = express();
 app.use(cors());
@@ -26,3 +27,4 @@ app.use("/api/resume", resumeRouter);
 app.use("/api/job", jobRoute);
 app.use("/api/course", courseRouter);
 app.use("/api/planner", Pathrouter);
+app.use("/api/rating", ratingRouter);
