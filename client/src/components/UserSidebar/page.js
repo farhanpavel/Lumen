@@ -35,7 +35,7 @@ export default function UserSidebar() {
 
   const menuItems = [
     // { id: "overview", label: "Overview", icon: Home },
-    { id: "profile", label: "My Profile", icon: User },
+
     { id: "preparation", label: "Preparation", icon: CreditCard },
     { id: "jobs", label: "Jobs", icon: FileText },
     { id: "rating", label: "Resume Rating", icon: Newspaper },

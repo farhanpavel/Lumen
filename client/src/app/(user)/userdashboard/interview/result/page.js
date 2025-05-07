@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Clock, Mail, CheckCircle, ArrowLeft } from "lucide-react";
+import { Clock, Mail, CheckCircle, ArrowLeft, User } from "lucide-react";
 
 export default function InterviewResultPage() {
   const router = useRouter();
@@ -51,7 +51,7 @@ export default function InterviewResultPage() {
               </div>
             </div>
 
-            <div className="bg-purple-50 rounded-xl p-6 max-w-md w-full">
+            <div className="bg-purple-50 rounded-xl p-6 max-w-md w-full mb-8">
               <div className="flex items-start">
                 <Mail className="w-5 h-5 text-purple-600 mt-1 mr-3 flex-shrink-0" />
                 <div>
@@ -65,6 +65,15 @@ export default function InterviewResultPage() {
                 </div>
               </div>
             </div>
+
+            {/* New HR Interview Button */}
+            <button
+              onClick={() => router.push("/userdashboard/meet")}
+              className="flex items-center gap-2 px-6 py-3 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-xl font-medium transition-all mt-4"
+            >
+              <User className="w-5 h-5" />
+              Go to HR Interview
+            </button>
           </div>
         </motion.div>
 
