@@ -1,96 +1,138 @@
 import cloudinary from "../cloudinaryConfig.js";
 import prisma from "../db.js";
-import multer from "multer";
-import axios from "axios";
-import FormData from "form-data";
 import "dotenv/config";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import fetch from "node-fetch";
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export const postResume = async (req, res) => {
-  const userId = req.user.id;
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded." });
-    }
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
+  try {
+    // 1. Upload to Cloudinary
     const cloudinaryResult = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        { resource_type: "auto", folder: "resume" },
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "resumes",
+          resource_type: "auto",
+          format: "pdf",
+        },
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
         }
       );
-      stream.end(req.file.buffer);
+      uploadStream.end(req.file.buffer);
     });
 
-    // 2. Prepare for PDF.co API call
-    const PDF_CO_API_KEY = process.env.PDF_CO;
-    const pdfCoExtractEndpoint = "https://api.pdf.co/v1/pdf/convert/to/text";
-
-    const formData = new FormData();
-    formData.append("file", req.file.buffer, {
-      filename: req.file.originalname,
-      contentType: req.file.mimetype,
-    });
-
-    // 3. Extract text using PDF.co
-    let summary = "";
-    try {
-      const pdfCoResponse = await axios.post(pdfCoExtractEndpoint, formData, {
-        headers: {
-          ...formData.getHeaders(),
-          "x-api-key": PDF_CO_API_KEY,
-        },
-        maxBodyLength: Infinity, // For larger files
-      });
-
-      if (pdfCoResponse.data.error) {
-        console.warn("PDF.co extraction error:", pdfCoResponse.data.message);
-        summary = "Summary extraction failed";
-      } else {
-        // Clean and truncate the extracted text
-        const rawText = pdfCoResponse.data.body || "";
-        summary = rawText
-          .replace(/\s+/g, " ") // Remove excessive whitespace
-          .substring(0, 2000); // Limit to 2000 characters
-      }
-    } catch (pdfCoError) {
-      console.error(
-        "PDF.co API error:",
-        pdfCoError.response?.data || pdfCoError.message
-      );
-      summary = "Summary extraction failed - service error";
-    }
-
-    // 4. Store in database
+    // 2. Create initial resume record with just the essentials
     const newResume = await prisma.resume.create({
       data: {
         resumeUrl: cloudinaryResult.secure_url,
-        summary: summary,
-        user: {
-          connect: { id: userId },
-        },
-        status: false, // Explicitly set status to false or remove this line to use the default value
+        summary: "Summary will be generated after form completion",
+        status: false, // Mark as incomplete
+        user: { connect: { id: req.user.id } },
       },
     });
 
     res.status(201).json({
       success: true,
-      message: "Resume uploaded and processed successfully",
       data: {
-        url: newResume.resumeUrl,
-        summary: newResume.summary,
         id: newResume.id,
+        url: newResume.resumeUrl,
       },
     });
   } catch (error) {
-    console.error("Upload Error:", error);
+    console.error("Upload failed:", error);
     res.status(500).json({
       success: false,
-      error: error.message || "Internal server error",
+      error: error.message || "Processing failed",
+    });
+  }
+};
+
+export const updateResumeDetails = async (req, res) => {
+  const userId = req.user.id;
+  const formData = req.body;
+
+  try {
+    // 1. First update the resume with form data
+    const updatedResume = await prisma.resume.update({
+      where: { userId },
+      data: {
+        jobTitle: formData.jobTitle,
+        yearsExperience: formData.yearsExperience,
+        education: formData.education,
+        skills: formData.skills,
+        languages: formData.languages,
+        frameworks: formData.frameworks,
+        jobPreference: formData.jobPreference,
+        availability: formData.availability,
+        salaryExpectation: formData.salaryExpectation,
+        relocation: formData.relocation,
+        aboutYou: formData.aboutYou,
+        projects: formData.projects,
+        industry: formData.industry,
+        certifications: formData.certifications,
+        otherTech: formData.otherTech,
+        status: true, // Mark as complete
+      },
+    });
+
+    // 2. Generate AI summary with the complete data
+    const prompt = `Create a professional summary for a resume with these details:
+    Job Title: ${formData.jobTitle}
+    Experience: ${formData.yearsExperience}
+    Skills: ${formData.skills.join(", ")}
+    Education: ${formData.education}
+    About: ${formData.aboutYou}`;
+
+    const aiSummary = await model.generateContent(prompt);
+    const summary = (await aiSummary.response).text();
+
+    // 3. Update with AI-generated summary
+    const finalResume = await prisma.resume.update({
+      where: { userId },
+      data: { summary },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: finalResume,
+    });
+  } catch (error) {
+    console.error("Update failed:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message || "Update failed",
+    });
+  }
+};
+
+export const getResume = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const resume = await prisma.resume.findUnique({
+      where: { userId },
+    });
+
+    if (!resume) {
+      return res.status(404).json({ error: "Resume not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: resume,
+    });
+  } catch (error) {
+    console.error("Fetch failed:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message || "Fetch failed",
     });
   }
 };

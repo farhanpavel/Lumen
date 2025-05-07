@@ -21,12 +21,28 @@ model User {
 }
 
 model Resume {
-  id        String  @id @default(uuid())
-  resumeUrl String
-  summary   String
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String  @unique
-  status    Boolean @default(false)
+  id                String   @id @default(uuid())
+  resumeUrl         String
+  summary           String
+  jobTitle          String?
+  yearsExperience   String?
+  education         String?
+  skills            String[]
+  languages         String[]
+  frameworks        String[]
+  jobPreference     String?
+  availability      String?
+  salaryExpectation String?
+  relocation        Boolean  @default(false)
+  aboutYou          String?
+  projects          Json? // Array of project objects
+  industry          String?
+  certifications    String?
+  otherTech         String?
+  status            Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id])
+  userId            String   @unique
 }
 
 model Job {
