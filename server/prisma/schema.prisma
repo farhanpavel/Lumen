@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
+  id       String    @id @default(uuid())
+  email    String    @unique
   password String
   name     String
-  role     String  @default("USER") // e.g., "USER", "HR", "ADMIN"
-  jobs     Job[]   @relation("PostedJobs")
+  role     String    @default("USER") // e.g., "USER", "HR", "ADMIN"
+  jobs     Job[]     @relation("PostedJobs")
   resume   Resume?
+  planner  Planner[]
 }
 
 model Resume {
@@ -80,6 +81,28 @@ enum EmploymentType {
   TEMPORARY
   INTERNSHIP
   VOLUNTEER
+}
+
+model Planner {
+  id        String        @id @default(uuid())
+  title     String[] // Title of the planner item (e.g., "Learn HTML")
+  status    PlannerStatus @default(NOT_STARTED)
+  priority  Priority
+  userId    String // Owner of the planner
+  user      User          @relation(fields: [userId], references: [id])
+  createdAt DateTime      @default(now())
+}
+
+enum PlannerStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
 }
 
 enum ExperienceLevel {
