@@ -18,7 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { url } from "@/components/Url/page";
-import { useRouter } from 'next/navigation'; // or 'next/navigation'
+import { useRouter } from 'next/navigation';
+import CodeEditor from "@/components/ui/CodeEditor"; // or 'next/navigation'
 
 // Inside component
 
