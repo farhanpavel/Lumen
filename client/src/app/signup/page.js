@@ -68,7 +68,7 @@ export default function Signup() {
           name: fullName,
           email,
           password,
-          role: "student",
+          role: "USER",
         }),
       });
 
