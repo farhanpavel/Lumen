@@ -1,8 +1,8 @@
 import express from "express";
 import "dotenv/config";
-
 import cors from "cors";
 import userRouter from "./routes/userRouter.js";
+import jobRoute from "./routes/jobRoute.js";
 
 const app = express();
 app.use(cors());
@@ -18,3 +18,4 @@ app.listen(PORT, () => {
 });
 
 app.use("/api/user", userRouter);
+app.use("/api/job", jobRoute);

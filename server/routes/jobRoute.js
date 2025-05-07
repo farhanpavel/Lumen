@@ -4,8 +4,8 @@ import {jwtAuthentication} from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post('/jobs', jwtAuthentication, postJob)
-router.get('/jobs', getJobs)
-router.get('/jobs/:id', getJobDescription)
+router.post('/create', jwtAuthentication, postJob)
+router.get('/', getJobs)
+router.get('/:id', getJobDescription)
 
 export default router

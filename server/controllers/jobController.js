@@ -99,7 +99,7 @@ export const getJobs = async (req, res) => {
                 include: {
                     keywords: true,
                     postedBy: {
-                        select: { name: true, company: true }
+                        select: { name: true } // Removed company from here since it's not in User model
                     }
                 },
                 orderBy: { createdAt: 'desc' }
@@ -112,7 +112,7 @@ export const getJobs = async (req, res) => {
             page: parseInt(page),
             limit: parseInt(limit),
             totalPages: Math.ceil(total / limit),
-            jobs
+            jobs // This will include the company field from the Job model automatically
         })
     } catch (error) {
         console.error('Error fetching jobs:', error)
@@ -129,7 +129,7 @@ export const getJobDescription = async (req, res) => {
             include: {
                 keywords: true,
                 postedBy: {
-                    select: { name: true, email: true, company: true }
+                    select: { name: true, email: true } // Removed company from here
                 }
             }
         })
