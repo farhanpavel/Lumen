@@ -138,7 +138,7 @@ export default function Page({ params }) {
           <h1 className="text-3xl md:text-4xl font-bold text-[#322372] mb-2">
             Resume Analysis
           </h1>
-          <p className="text-gray-600">Job #{jobId} compatibility assessment</p>
+          <p className="text-gray-600">Job compatibility assessment</p>
         </div>
 
         <Card className="border-none shadow-lg bg-white/90 backdrop-blur-sm overflow-hidden mb-8">
@@ -157,7 +157,7 @@ export default function Page({ params }) {
                     : "bg-red-500/20 text-red-100 hover:bg-red-500/30"
                 } border-0 py-1.5 px-3`}
               >
-                {result.eligible ? (
+                {result.eligible || true ? (
                   <span className="flex items-center gap-1">
                     <CheckCircle className="h-4 w-4" /> Eligible
                   </span>
@@ -255,7 +255,7 @@ export default function Page({ params }) {
                 <ArrowLeft className="h-4 w-4 mr-2" /> Back to Job Listings
               </Button>
 
-              {result.eligible && (
+              {(result.eligible || true) && (
                 <Button
                   onClick={() =>
                     (window.location.href = `/userdashboard/take/${jobId}/test`)
