@@ -162,7 +162,7 @@ export default function ResumeAnalysisPage() {
                   Resume Upload
                 </h2>
                 <p className="mt-2 text-white/80">
-                  Let's start by uploading your resume. We'll analyze it and
+                  Let&lsquo;s start by uploading your resume. We&lsquo;ll analyze it and
                   provide feedback to help you stand out.
                 </p>
               </div>

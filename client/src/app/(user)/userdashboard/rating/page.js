@@ -363,7 +363,7 @@ export default function ResumeAnalysisPage() {
             Resume Analysis
           </h1>
           <p className="text-gray-600">
-            Review your resume's strengths and areas for improvement
+            Review your resume&apos;s strengths and areas for improvement
           </p>
           {isAnalysisLoading && (
             <div className="flex items-center mt-2 text-[#7657ff]">
@@ -578,7 +578,7 @@ export default function ResumeAnalysisPage() {
                             <p className="text-gray-700 mt-1">
                               Focus on improving your project descriptions and
                               adding missing technical skills to increase your
-                              resume's effectiveness.
+                              resume&apos;s effectiveness.
                             </p>
                             <Button
                               className="mt-3 bg-[#7657ff] hover:bg-[#322372]"

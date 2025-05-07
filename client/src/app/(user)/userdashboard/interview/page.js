@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { url } from "@/components/Url/page";
 import {
   Mic,
@@ -34,14 +34,21 @@ export default function InterviewPage() {
   const [jobDetails, setJobDetails] = useState(null);
   const [resumeDetails, setResumeDetails] = useState(null);
   const [answers, setAnswers] = useState([]);
+  const [difficulty, setDifficulty] = useState("medium"); // State for difficulty
 
   const router = useRouter();
-  const searchParams = useSearchParams();
   const audioRef = useRef(null);
 
   const jobId = Cookies.get("jobId");
 
-  const difficulty = searchParams.get("difficulty") || "medium";
+  // Move searchParams logic to useEffect
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const difficultyParam = searchParams.get("difficulty") || "medium";
+      setDifficulty(difficultyParam);
+    }
+  }, []);
 
   const ELEVENLABS_API_KEY = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY;
   const ELEVENLABS_VOICE_ID = process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID;
@@ -51,7 +58,6 @@ export default function InterviewPage() {
       try {
         setIsLoading(true);
         const token = Cookies.get("AccessToken");
-        // Use the new API endpoint to generate questions
         const response = await fetch(
           `${url}/api/interview/generate-questions-for-user`,
           {
@@ -62,8 +68,7 @@ export default function InterviewPage() {
             },
             body: JSON.stringify({
               jobId,
-
-              difficulty,
+              difficulty, // Use difficulty from state
             }),
           }
         );
@@ -76,11 +81,8 @@ export default function InterviewPage() {
           throw new Error(data.error || "Failed to generate questions");
         }
 
-        // Set job and resume details
         setJobDetails(data.data.job);
         setResumeDetails(data.data.resume);
-
-        // Set questions and initialize answers array
         setQuestions(data.data.questions);
         setAnswers(
           data.data.questions.map((q) => ({
@@ -208,24 +210,19 @@ export default function InterviewPage() {
   };
 
   const nextQuestion = async () => {
-    // Stop the speech recognition if it is active
     if (isMicActive && recognition) {
       recognition.stop();
       setIsMicActive(false);
     }
 
-    // Stop any ongoing speech
     stopSpeaking();
 
-    // Save the current answer
     if (currentQuestion && inputText.trim() !== "") {
-      // Update the answers array
       const updatedAnswers = [...answers];
       updatedAnswers[currentQuestionIndex].answer = inputText.trim();
       setAnswers(updatedAnswers);
     }
 
-    // Move to the next question or finish the interview
     if (currentQuestionIndex < questions.length - 1) {
       const nextIndex = currentQuestionIndex + 1;
       setCurrentQuestionIndex(nextIndex);
@@ -235,7 +232,6 @@ export default function InterviewPage() {
       setInputText("");
       speakQuestion(newQuestion);
     } else {
-      // Submit all answers for evaluation
       await submitAnswers();
     }
   };
@@ -385,7 +381,6 @@ export default function InterviewPage() {
         </motion.div>
       ) : (
         <div className="w-full max-w-4xl mx-auto space-y-8">
-          {/* Progress bar */}
           <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
             <motion.div
               initial={{ width: 0 }}
@@ -544,7 +539,6 @@ export default function InterviewPage() {
             </div>
           </motion.div>
 
-          {/* Job details section */}
           {jobDetails && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -572,7 +566,6 @@ export default function InterviewPage() {
             </motion.div>
           )}
 
-          {/* Tips section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

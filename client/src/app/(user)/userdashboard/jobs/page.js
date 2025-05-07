@@ -32,7 +32,7 @@ const NoJobsFoundDisplay = ({ onClearFilters }) => (
         No jobs found
       </h3>
       <p className="text-gray-600 mb-4">
-        We couldn't find any jobs matching your search criteria. Try adjusting
+        We couldn&apos;t find any jobs matching your search criteria. Try adjusting
         your filters.
       </p>
       <Button

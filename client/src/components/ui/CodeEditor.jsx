@@ -66,12 +66,12 @@ const LANGUAGE_ICONS = {
 };
 
 const CODE_SNIPPETS = {
-  javascript: `\nfunction greet(name) {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("Alex");\n`,
-  typescript: `\ntype Params = {\n\tname: string;\n}\n\nfunction greet(data: Params) {\n\tconsole.log("Hello, " + data.name + "!");\n}\n\ngreet({ name: "Alex" });\n`,
-  python: `\ndef greet(name):\n\tprint("Hello, " + name + "!")\n\ngreet("Alex")\n`,
-  java: `\npublic class HelloWorld {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World");\n\t}\n}\n`,
+  javascript: `\nfunction greet(name) {\n\tconsole.log(&quot;Hello, &quot; + name + &quot;!&quot;);\n}\n\ngreet(&quot;Alex&quot;);\n`,
+  typescript: `\ntype Params = {\n\tname: string;\n}\n\nfunction greet(data: Params) {\n\tconsole.log(&quot;Hello, &quot; + data.name + &quot;!&quot;);\n}\n\ngreet({ name: &quot;Alex&quot; });\n`,
+  python: `\ndef greet(name):\n\tprint(&quot;Hello, &quot; + name + &quot;!&quot;)\n\ngreet(&quot;Alex&quot;)\n`,
+  java: `\npublic class HelloWorld {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println(&quot;Hello World&quot;);\n\t}\n}\n`,
   csharp:
-    'using System;\n\nnamespace HelloWorld\n{\n\tclass Hello { \n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine("Hello World in C#");\n\t\t}\n\t}\n}\n',
+    "using System;\n\nnamespace HelloWorld\n{\n\tclass Hello { \n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine(&quot;Hello World in C#&quot;);\n\t\t}\n\t}\n}\n",
   php: "<?php\n\n$name = 'Alex';\necho $name;\n",
 };
 
@@ -354,7 +354,7 @@ const CodeEditor = ({ jobId }) => {
               ) : (
                 <div className="flex items-center gap-2">
                   <Play className="h-4 w-4" />
-                  <span>Run & Submit</span>
+                  <span>Run &amp; Submit</span>
                 </div>
               )}
             </Button>
@@ -459,13 +459,14 @@ const CodeEditor = ({ jobId }) => {
                   <p className="font-semibold">Example 1:</p>
                   <p>
                     <strong>Input:</strong>{" "}
-                    <code>s1 = "bcdcb", s2 = "bcdcbe"</code>
+                    <code>s1 = &quot;bcdcb&quot;, s2 = &quot;bcdcbe&quot;</code>
                     <br />
                     <strong>Output:</strong> <code>7</code>
                     <br />
                     <strong>Explanation:</strong> Common palindromic
-                    subsequences are ["b", "c", "d", "bcb", "cdc", "bcdcb",
-                    "cbc"]
+                    subsequences are [&quot;b&quot;, &quot;c&quot;,
+                    &quot;d&quot;, &quot;bcb&quot;, &quot;cdc&quot;,
+                    &quot;bcdcb&quot;, &quot;cbc&quot;]
                   </p>
                 </div>
 
@@ -473,12 +474,13 @@ const CodeEditor = ({ jobId }) => {
                   <p className="font-semibold">Example 2:</p>
                   <p>
                     <strong>Input:</strong>{" "}
-                    <code>s1 = "abac", s2 = "acab"</code>
+                    <code>s1 = &quot;abac&quot;, s2 = &quot;acab&quot;</code>
                     <br />
                     <strong>Output:</strong> <code>4</code>
                     <br />
                     <strong>Explanation:</strong> Common palindromic
-                    subsequences are ["a", "b", "c", "aa"]
+                    subsequences are [&quot;a&quot;, &quot;b&quot;,
+                    &quot;c&quot;, &quot;aa&quot;]
                   </p>
                 </div>
               </div>

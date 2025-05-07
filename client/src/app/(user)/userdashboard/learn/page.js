@@ -104,7 +104,7 @@ export default function Page() {
             No Learning Plan Found
           </h2>
           <p className="text-gray-600 mb-4">
-            You don't have any active learning plans.
+            You don&apos;t have any active learning plans.
           </p>
           <button className="py-2 px-4 bg-[#7657ff] text-white rounded-md hover:bg-[#322372] transition-colors">
             Create a Plan

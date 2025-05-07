@@ -237,7 +237,7 @@ export default function ExamPage({ params }) {
                 Loading Exam Questions
               </h3>
               <p className="mt-2 text-gray-600 text-center max-w-xs">
-                We're preparing your technical assessment. This should only take
+                We&apos;re preparing your technical assessment. This should only take
                 a moment.
               </p>
             </div>

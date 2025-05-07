@@ -97,7 +97,7 @@ export default function Page({ params }) {
                 Analyzing Your Resume
               </h3>
               <p className="mt-2 text-gray-600 text-center max-w-xs">
-                We're comparing your resume with the job requirements to
+                We&apos;re comparing your resume with the job requirements to
                 determine your eligibility.
               </p>
             </div>
@@ -291,7 +291,7 @@ export default function Page({ params }) {
                     Not Eligible Yet?
                   </h3>
                   <p className="text-gray-700 mb-4">
-                    Don't worry! You can improve your skills and try again.
+                    Don&apos;t worry! You can improve your skills and try again.
                     Visit our preparation page to find resources that will help
                     you develop the skills needed for this job.
                   </p>

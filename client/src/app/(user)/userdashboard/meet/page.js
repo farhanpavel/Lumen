@@ -98,7 +98,7 @@ export default function SuccessPage() {
             Congratulations!
           </h1>
           <p className="text-gray-600 max-w-xl mx-auto">
-            You've successfully completed all the assessment stages. You're now
+            You&apos;ve successfully completed all the assessment stages. You&apos;re now
             invited to the final HR interview.
           </p>
         </div>
@@ -114,7 +114,7 @@ export default function SuccessPage() {
                   Assessment Completed
                 </h3>
                 <p className="text-sm text-gray-600">
-                  You've successfully passed all required assessments
+                  You&apos;ve successfully passed all required assessments
                 </p>
               </div>
             </CardContent>

@@ -63,7 +63,7 @@ export default function Feature() {
             {" "}
             {/* Increased size slightly */}
             Unlock Your Potential with{" "}
-            <span className="text-[#7657ff]/90">Lumen's Smart Tools</span>{" "}
+            <span className="text-[#7657ff]/90">Lumen&lsquo;s Smart Tools</span>{" "}
             {/* Slightly more opaque span */}
           </h2>
           <p className="text-[#5a5a5a] text-base font-medium w-[70%] md:w-[55%] mx-auto text-center mt-3">

@@ -185,7 +185,7 @@ export default function ResumeQuestionsPage() {
             Complete Your Profile
           </h1>
           <p className="text-gray-600 mb-6">
-            We've analyzed your resume. Now, let's fill in some additional
+            We&apos;ve analyzed your resume. Now, let&apos;s fill in some additional
             details to enhance your profile.
           </p>
 
@@ -339,10 +339,10 @@ export default function ResumeQuestionsPage() {
                             Associate Degree
                           </SelectItem>
                           <SelectItem value="bachelor">
-                            Bachelor's Degree
+                            Bachelor&apos;s Degree
                           </SelectItem>
                           <SelectItem value="master">
-                            Master's Degree
+                            Master&apos;s Degree
                           </SelectItem>
                           <SelectItem value="phd">PhD or Doctorate</SelectItem>
                           <SelectItem value="bootcamp">Bootcamp</SelectItem>

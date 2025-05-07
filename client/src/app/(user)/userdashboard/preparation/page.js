@@ -326,7 +326,7 @@ export default function CourseRecommendations() {
                           No courses found
                         </h3>
                         <p className="text-gray-600 mb-4">
-                          We couldn't find any courses matching your selected
+                          We couldn&apos;t find any courses matching your selected
                           skills. Try selecting different skills or check
                           YouTube tutorials.
                         </p>
@@ -406,7 +406,7 @@ export default function CourseRecommendations() {
                           No videos found
                         </h3>
                         <p className="text-gray-600 mb-4">
-                          We couldn't find any videos matching your selected
+                          We couldn&apos;t find any videos matching your selected
                           skills. Try selecting different skills or check
                           Coursera courses.
                         </p>

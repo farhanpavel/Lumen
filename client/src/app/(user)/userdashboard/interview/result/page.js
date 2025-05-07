@@ -92,7 +92,7 @@ export default function InterviewResultPage() {
                 Prepare for Next Steps
               </h3>
               <p className="text-gray-700 mb-4">
-                While waiting for HR's response, you can prepare for potential
+                While waiting for HR&lsquo;s response, you can prepare for potential
                 next rounds by reviewing common interview questions.
               </p>
               <button
