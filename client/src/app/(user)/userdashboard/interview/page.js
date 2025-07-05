@@ -1,8 +1,8 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { url } from "@/components/Url/page";
+'use client';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { url } from '@/components/Url/page';
 import {
   Mic,
   SkipForward,
@@ -14,15 +14,15 @@ import {
   MessageSquare,
   AlertCircle,
   Loader,
-} from "lucide-react";
-import Cookies from "js-cookie";
+} from 'lucide-react';
+import Cookies from 'js-cookie';
 
 export default function InterviewPage() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [timer, setTimer] = useState(120);
   const [countdown, setCountdown] = useState(5);
   const [isMicActive, setIsMicActive] = useState(false);
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState('');
   const [recognition, setRecognition] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isCountdownActive, setIsCountdownActive] = useState(true);
@@ -34,18 +34,18 @@ export default function InterviewPage() {
   const [jobDetails, setJobDetails] = useState(null);
   const [resumeDetails, setResumeDetails] = useState(null);
   const [answers, setAnswers] = useState([]);
-  const [difficulty, setDifficulty] = useState("medium"); // State for difficulty
+  const [difficulty, setDifficulty] = useState('medium'); // State for difficulty
 
   const router = useRouter();
   const audioRef = useRef(null);
 
-  const jobId = Cookies.get("jobId");
+  const jobId = Cookies.get('jobId');
 
   // Move searchParams logic to useEffect
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       const searchParams = new URLSearchParams(window.location.search);
-      const difficultyParam = searchParams.get("difficulty") || "medium";
+      const difficultyParam = searchParams.get('difficulty') || 'medium';
       setDifficulty(difficultyParam);
     }
   }, []);
@@ -57,13 +57,13 @@ export default function InterviewPage() {
     const fetchQuestions = async () => {
       try {
         setIsLoading(true);
-        const token = Cookies.get("AccessToken");
+        const token = Cookies.get('AccessToken');
         const response = await fetch(
           `${url}/api/interview/generate-questions-for-user`,
           {
-            method: "POST",
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
               Authorization: token,
             },
             body: JSON.stringify({
@@ -73,12 +73,12 @@ export default function InterviewPage() {
           }
         );
 
-        if (!response.ok) throw new Error("Failed to fetch questions");
+        if (!response.ok) throw new Error('Failed to fetch questions');
 
         const data = await response.json();
 
         if (!data.success) {
-          throw new Error(data.error || "Failed to generate questions");
+          throw new Error(data.error || 'Failed to generate questions');
         }
 
         setJobDetails(data.data.job);
@@ -87,16 +87,16 @@ export default function InterviewPage() {
         setAnswers(
           data.data.questions.map((q) => ({
             question: q.question,
-            answer: "",
+            answer: '',
           }))
         );
 
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching questions:", error);
+        console.error('Error fetching questions:', error);
         setError(
           error.message ||
-            "Failed to load interview questions. Please try again later."
+            'Failed to load interview questions. Please try again later.'
         );
         setIsLoading(false);
       }
@@ -105,34 +105,34 @@ export default function InterviewPage() {
     if (jobId) {
       fetchQuestions();
     } else {
-      setError("Missing job ID or user ID. Please provide both parameters.");
+      setError('Missing job ID or user ID. Please provide both parameters.');
       setIsLoading(false);
     }
   }, [jobId, difficulty]);
 
   useEffect(() => {
-    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognitionInstance = new SpeechRecognition();
 
       recognitionInstance.continuous = true;
       recognitionInstance.interimResults = false;
-      recognitionInstance.lang = "en-US";
+      recognitionInstance.lang = 'en-US';
 
       recognitionInstance.onresult = (event) => {
         const newTranscript =
           event.results[event.results.length - 1][0].transcript;
-        setInputText((prev) => prev + " " + newTranscript);
+        setInputText((prev) => prev + ' ' + newTranscript);
       };
 
       recognitionInstance.onerror = (event) => {
-        console.error("Speech Recognition Error:", event.error);
+        console.error('Speech Recognition Error:', event.error);
       };
 
       setRecognition(recognitionInstance);
     } else {
-      console.error("Speech Recognition is not supported in this browser.");
+      console.error('Speech Recognition is not supported in this browser.');
     }
   }, []);
 
@@ -168,10 +168,10 @@ export default function InterviewPage() {
       const response = await fetch(
         `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "xi-api-key": ELEVENLABS_API_KEY,
+            'Content-Type': 'application/json',
+            'xi-api-key': ELEVENLABS_API_KEY,
           },
           body: JSON.stringify({
             text: text,
@@ -183,7 +183,7 @@ export default function InterviewPage() {
         }
       );
 
-      if (!response.ok) throw new Error("Failed to generate speech");
+      if (!response.ok) throw new Error('Failed to generate speech');
 
       const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
@@ -196,7 +196,7 @@ export default function InterviewPage() {
         };
       }
     } catch (error) {
-      console.error("Error generating speech:", error);
+      console.error('Error generating speech:', error);
       setIsSpeaking(false);
     }
   };
@@ -217,7 +217,7 @@ export default function InterviewPage() {
 
     stopSpeaking();
 
-    if (currentQuestion && inputText.trim() !== "") {
+    if (currentQuestion && inputText.trim() !== '') {
       const updatedAnswers = [...answers];
       updatedAnswers[currentQuestionIndex].answer = inputText.trim();
       setAnswers(updatedAnswers);
@@ -229,7 +229,7 @@ export default function InterviewPage() {
       const newQuestion = questions[nextIndex].question;
       setCurrentQuestion(newQuestion);
       setTimer(120);
-      setInputText("");
+      setInputText('');
       speakQuestion(newQuestion);
     } else {
       await submitAnswers();
@@ -238,10 +238,10 @@ export default function InterviewPage() {
 
   const submitAnswers = async () => {
     try {
-      router.push("/userdashboard/interview/result");
+      router.push('/userdashboard/interview/result');
     } catch (error) {
-      console.error("Error submitting answers:", error);
-      alert("There was an error submitting your answers. Please try again.");
+      console.error('Error submitting answers:', error);
+      alert('There was an error submitting your answers. Please try again.');
     }
   };
 
@@ -266,14 +266,14 @@ export default function InterviewPage() {
         recognition.stop();
       }
     } else {
-      alert("Speech recognition is not supported in this browser.");
+      alert('Speech recognition is not supported in this browser.');
     }
   };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
@@ -408,19 +408,19 @@ export default function InterviewPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className={`bg-white rounded-xl px-6 py-3 flex items-center shadow-md ${
-                timer < 30 ? "animate-pulse" : ""
+                timer < 30 ? 'animate-pulse' : ''
               }`}
             >
               <Clock
                 className={`w-5 h-5 mr-2 ${
-                  timer < 30 ? "text-red-500" : "text-[#7657ff]"
+                  timer < 30 ? 'text-red-500' : 'text-[#7657ff]'
                 }`}
               />
               <div>
                 <span className="text-gray-500 text-sm block">Time Left</span>
                 <span
                   className={`font-medium ${
-                    timer < 30 ? "text-red-500" : "text-[#322372]"
+                    timer < 30 ? 'text-red-500' : 'text-[#322372]'
                   }`}
                 >
                   {formatTime(timer)}
@@ -450,7 +450,7 @@ export default function InterviewPage() {
                   }
                   className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
                   aria-label={
-                    isSpeaking ? "Stop speaking" : "Read question aloud"
+                    isSpeaking ? 'Stop speaking' : 'Read question aloud'
                   }
                 >
                   {isSpeaking ? (
@@ -497,18 +497,18 @@ export default function InterviewPage() {
                   flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-medium transition-all w-full sm:w-auto shadow-md
                   ${
                     isMicActive
-                      ? "bg-green-500 text-white"
-                      : "bg-[#7657ff] text-white"
+                      ? 'bg-green-500 text-white'
+                      : 'bg-[#7657ff] text-white'
                   }
                   ${
                     isSpeaking
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:shadow-lg hover:shadow-[#7657ff]/20"
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:shadow-lg hover:shadow-[#7657ff]/20'
                   }
                 `}
               >
                 <Mic className="w-5 h-5" />
-                {isMicActive ? "Stop Recording" : "Start Recording"}
+                {isMicActive ? 'Stop Recording' : 'Start Recording'}
               </motion.button>
 
               <motion.button
@@ -519,8 +519,8 @@ export default function InterviewPage() {
                   flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-medium transition-all w-full sm:w-auto shadow-md
                   ${
                     isLastQuestion
-                      ? "bg-green-500 text-white hover:shadow-lg hover:shadow-green-500/20"
-                      : "bg-[#4299e1] text-white hover:bg-[#3182ce]"
+                      ? 'bg-green-500 text-white hover:shadow-lg hover:shadow-green-500/20'
+                      : 'bg-[#4299e1] text-white hover:bg-[#3182ce]'
                   }
                 `}
               >
@@ -552,11 +552,11 @@ export default function InterviewPage() {
               </h3>
               <div className="text-gray-600 text-sm">
                 <p>
-                  <span className="font-medium">Position:</span>{" "}
+                  <span className="font-medium">Position:</span>{' '}
                   {jobDetails.title}
                 </p>
                 <p>
-                  <span className="font-medium">Company:</span>{" "}
+                  <span className="font-medium">Company:</span>{' '}
                   {jobDetails.company}
                 </p>
                 <p className="mt-1 text-xs line-clamp-2">
