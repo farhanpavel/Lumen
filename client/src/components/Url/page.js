@@ -1,1 +1,1 @@
-export const url = "https://lumen-server-tau.vercel.app/";
+export const url = "https://lumen-server-tau.vercel.app";
